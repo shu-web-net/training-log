@@ -1,0 +1,1558 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>トレーニング記録帳</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Old+Mincho:wght@400;700&family=Zen+Kaku+Gothic+New:wght@400;500;700&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+  :root{
+    --bg:#e9edee; --surface:#ffffff; --surface-2:#f1f5f6; --line:#d2dadd;
+    --ink:#151c20; --muted:#5e6c74; --accent:#1c5f77; --accent-ink:#ffffff; --accent-soft:#d6e7ed;
+    --food:#8e6520; --food-soft:#f1e5cd; --ok:#2f7d5d; --yoga:#6a5a9c;
+    --am:#9a6a1f; --pm:#3f5c96;
+    --c-am:#9a6a1f; --c-pm:#3f5c96; --grid:#dfe5e7; --alert:#a8604f; --dotw:#5b7b88;
+    --radius:10px;
+    --sans:"Zen Kaku Gothic New","Hiragino Kaku Gothic ProN","Yu Gothic",system-ui,sans-serif;
+    --serif:"Zen Old Mincho","Hiragino Mincho ProN","Yu Mincho",serif;
+    --mono:"JetBrains Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#0f1518; --surface:#182024; --surface-2:#1e2a2f; --line:#2b383e;
+      --ink:#e7eef1; --muted:#93a4ad; --accent:#63b8d4; --accent-ink:#0f1518; --accent-soft:#1c3945;
+      --food:#d9a552; --food-soft:#382e1c; --ok:#5fbf92; --yoga:#a99bdd;
+      --am:#dcae5c; --pm:#8fa8dd;
+      --c-am:#bd8b34; --c-pm:#6486cc; --grid:#2b383e; --alert:#df9683; --dotw:#8fb0bd;
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#0f1518; --surface:#182024; --surface-2:#1e2a2f; --line:#2b383e;
+    --ink:#e7eef1; --muted:#93a4ad; --accent:#63b8d4; --accent-ink:#0f1518; --accent-soft:#1c3945;
+    --food:#d9a552; --food-soft:#382e1c; --ok:#5fbf92; --yoga:#a99bdd;
+    --am:#dcae5c; --pm:#8fa8dd;
+    --c-am:#bd8b34; --c-pm:#6486cc; --grid:#2b383e; --alert:#df9683; --dotw:#8fb0bd;
+  }
+
+  *{box-sizing:border-box}
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font-family:var(--sans); font-size:15px; line-height:1.65;
+    padding-inline:16px; padding-block:0 48px;
+    -webkit-text-size-adjust:100%;
+  }
+  .wrap{max-width:1080px; margin:0 auto}
+  h1,h2,h3{margin:0; text-wrap:balance}
+  button{font:inherit; color:inherit; cursor:pointer}
+  input,select,textarea{font:inherit; color:inherit}
+  :focus-visible{outline:2px solid var(--accent); outline-offset:2px}
+
+  header{padding-block:22px 14px; display:flex; flex-direction:column; gap:14px}
+  .brand{display:flex; align-items:baseline; gap:12px; flex-wrap:wrap}
+  .brand h1{font-family:var(--serif); font-size:26px; font-weight:700; letter-spacing:.02em}
+  .brand .sub{color:var(--muted); font-size:12.5px; letter-spacing:.08em}
+  .tiles{display:grid; grid-template-columns:repeat(auto-fit,minmax(118px,1fr)); gap:8px}
+  .tile{background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); padding:10px 12px}
+  .tile .k{font-size:11px; letter-spacing:.1em; color:var(--muted)}
+  .tile .v{font-family:var(--mono); font-variant-numeric:tabular-nums; font-size:21px; font-weight:600; line-height:1.3}
+  .tile .v small{font-family:var(--sans); font-size:11px; font-weight:400; color:var(--muted); margin-left:3px}
+  .tile .v{white-space:nowrap}
+  .tile .dline{display:block; font-size:12.5px; line-height:1.35; white-space:nowrap}
+  .tile .dline .d{margin-left:0}
+  .tile.am .k{color:var(--am)} .tile.pm .k{color:var(--pm)}
+  .up{color:#a8604f} .down{color:var(--ok)}
+  @media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .up{color:#df9683}}
+  :root[data-theme="dark"] .up{color:#df9683}
+
+  .notice{background:var(--food-soft); border:1px solid var(--line); border-radius:var(--radius); padding:9px 12px; font-size:13px}
+
+  .grid{display:grid; grid-template-columns:1.15fr .85fr; gap:16px; align-items:start}
+  @media (max-width:860px){ .grid{grid-template-columns:1fr} }
+  .col{display:flex; flex-direction:column; gap:16px; min-width:0}
+  .card{background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); padding:16px; min-width:0}
+  .card > h2{font-family:var(--serif); font-size:16px; font-weight:700; display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap}
+  .card > h2 .when{font-family:var(--mono); font-size:12.5px; font-weight:400; color:var(--muted)}
+  /* 編集中の日付（スクロールしても上に残る） */
+  .daybar{
+    position:sticky; top:env(safe-area-inset-top, 0px); z-index:5;
+    margin:-16px -16px 0; padding:10px 10px;
+    display:flex; align-items:center; gap:8px;
+    background:var(--surface); border-bottom:1px solid var(--line);
+    border-radius:var(--radius) var(--radius) 0 0;
+  }
+  .daybar.past{background:color-mix(in srgb, var(--food) 14%, var(--surface)); border-bottom-color:color-mix(in srgb, var(--food) 45%, transparent)}
+  .daybar.future{background:color-mix(in srgb, var(--pm) 12%, var(--surface))}
+  .dmain{flex:1; min-width:0; text-align:center}
+  .dbig{display:flex; align-items:center; justify-content:center; gap:8px; line-height:1.15}
+  #dayMD{font-family:var(--mono); font-variant-numeric:tabular-nums; font-size:28px; font-weight:600; letter-spacing:.01em}
+  .dw{font-size:14px; font-weight:700; padding:2px 9px; border-radius:999px; background:var(--surface-2); border:1px solid var(--line)}
+  .dw.sat{color:#3f6f95} .dw.sun{color:#b0503c}
+  @media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .dw.sat{color:#7fb6d6} :root:not([data-theme="light"]) .dw.sun{color:#df9683}}
+  :root[data-theme="dark"] .dw.sat{color:#7fb6d6} :root[data-theme="dark"] .dw.sun{color:#df9683}
+  .dsub{font-size:12px; color:var(--muted); margin-top:3px; display:flex; justify-content:center; align-items:center; gap:8px; flex-wrap:wrap}
+  .daybar.past .dsub span{color:var(--food); font-weight:600}
+  .dback{border:1px solid var(--accent); background:var(--surface); color:var(--accent); border-radius:999px; padding:1px 10px; font-size:12px}
+  .dnav{
+    flex:0 0 40px; height:40px; border-radius:10px; border:1px solid var(--line);
+    background:var(--surface-2); font-size:22px; line-height:1; color:var(--ink);
+  }
+  .dnav:hover{border-color:var(--accent); color:var(--accent)}
+  .sec{margin-top:16px}
+  .sec > .lbl{font-size:11px; letter-spacing:.12em; color:var(--muted); display:flex; align-items:center; gap:8px; margin-bottom:8px}
+  .sec > .lbl::after{content:""; flex:1; height:1px; background:var(--line)}
+
+  .row{display:flex; gap:8px; flex-wrap:wrap}
+  .field{background:var(--surface-2); border:1px solid var(--line); border-radius:8px; padding:8px 10px; min-width:0}
+  input.field, select.field, textarea.field{width:100%}
+  textarea.field{resize:vertical; min-height:62px; line-height:1.6}
+  .num{font-family:var(--mono); font-variant-numeric:tabular-nums; text-align:right}
+  .grow{flex:1 1 110px}
+  .w-reps{flex:0 0 66px}
+  .w-unit{flex:0 0 64px}
+  .w-meal{flex:0 0 96px}
+  .btn{border:1px solid var(--accent); background:var(--accent); color:var(--accent-ink); border-radius:8px; padding:8px 14px; font-weight:500; white-space:nowrap}
+  .btn:hover{filter:brightness(1.08)}
+  .btn.ghost{background:transparent; color:var(--accent)}
+  .btn.sm{padding:5px 10px; font-size:13px}
+
+  /* 体組成 朝/夜 */
+  .slots{display:grid; grid-template-columns:1fr 1fr; gap:10px}
+  @media (max-width:520px){ .slots{grid-template-columns:1fr} }
+  .slot{border:1px solid var(--line); border-radius:9px; padding:10px 11px 12px; background:var(--surface-2)}
+  .slot h3{font-size:12px; letter-spacing:.14em; display:flex; align-items:center; gap:7px}
+  .slot.am h3{color:var(--am)} .slot.pm h3{color:var(--pm)}
+  .slot h3::before{content:""; width:8px; height:8px; border-radius:50%; background:currentColor}
+  .slot .f{display:flex; align-items:center; gap:8px; margin-top:8px}
+  .slot .f label{flex:1; font-size:12.5px; color:var(--muted)}
+  .slot .f input{flex:0 0 92px; background:var(--surface)}
+  .slot .f .u{flex:0 0 26px; font-size:11.5px; color:var(--muted)}
+
+  /* 習慣チェック */
+  .habits{display:grid; grid-template-columns:1fr 1fr; gap:10px}
+  @media (max-width:520px){ .habits{grid-template-columns:1fr} }
+  .chk{display:flex; align-items:center; gap:10px; background:var(--surface-2); border:1px solid var(--line); border-radius:9px; padding:11px 12px; cursor:pointer}
+  .chk input{width:19px; height:19px; margin:0; accent-color:var(--accent); flex:0 0 auto}
+  .chk .nm{font-weight:500}
+  .chk .ct{margin-left:auto; font-family:var(--mono); font-size:11.5px; color:var(--muted); white-space:nowrap}
+  .chk.on{border-color:var(--yoga); background:color-mix(in srgb, var(--yoga) 12%, transparent)}
+  .chk.on .nm{color:var(--yoga)}
+
+  /* ○× トグル */
+  .gutrow{display:flex; align-items:center; gap:8px; background:var(--surface-2); border:1px solid var(--line); border-radius:9px; padding:9px 11px}
+  .gutrow .nm{font-weight:500; flex:1}
+  .mk{
+    width:36px; height:32px; border:1px solid var(--line); background:var(--surface);
+    border-radius:8px; font-size:15px; line-height:1; color:var(--muted); flex:0 0 auto;
+  }
+  .mk[aria-pressed="true"].ok{border-color:var(--ok); color:var(--ok); background:color-mix(in srgb, var(--ok) 14%, transparent); font-weight:600}
+  .mk[aria-pressed="true"].mid{border-color:var(--food); color:var(--food); background:color-mix(in srgb, var(--food) 14%, transparent); font-weight:600}
+  .mk[aria-pressed="true"].ng{border-color:#a8604f; color:#a8604f; background:color-mix(in srgb, #a8604f 14%, transparent); font-weight:600}
+  @media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .mk[aria-pressed="true"].ng{border-color:#df9683; color:#df9683; background:color-mix(in srgb,#df9683 16%,transparent)}}
+  :root[data-theme="dark"] .mk[aria-pressed="true"].ng{border-color:#df9683; color:#df9683; background:color-mix(in srgb,#df9683 16%,transparent)}
+
+  ul.entries{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:6px}
+  ul.entries li{display:flex; align-items:center; gap:7px; background:var(--surface-2); border:1px solid var(--line); border-radius:8px; padding:5px 7px}
+  ul.entries .name{flex:1; min-width:0; overflow-wrap:anywhere}
+  /* 行の中でそのまま直せる入力欄 */
+  ul.entries .inline{
+    background:transparent; border:1px solid transparent; border-radius:6px; padding:4px 6px; min-width:0;
+  }
+  ul.entries .inline:hover{border-color:var(--line); background:var(--surface)}
+  ul.entries .inline:focus{border-color:var(--accent); background:var(--surface); outline:none}
+  ul.entries .inline.nm{flex:1 1 auto; width:100%}
+  ul.entries .inline.rp{flex:0 0 62px; font-family:var(--mono); font-variant-numeric:tabular-nums; font-weight:600; text-align:right}
+  ul.entries .inline.slot{flex:0 0 68px; color:var(--food); font-size:13px}
+  ul.entries .inline.ut{flex:0 0 62px; font-size:12.5px; color:var(--muted)}
+  ul.entries .unit{font-size:11px; color:var(--muted); flex:0 0 auto; margin-left:-4px}
+  ul.entries .inline.rp::-webkit-outer-spin-button, ul.entries .inline.rp::-webkit-inner-spin-button{-webkit-appearance:none; margin:0}
+  .tag{font-size:11px; letter-spacing:.06em; padding:2px 8px; border-radius:999px; background:var(--food-soft); color:var(--food); border:1px solid var(--line); flex:0 0 auto}
+  .del{border:none; background:transparent; color:var(--muted); font-size:16px; line-height:1; padding:4px 6px; border-radius:6px; flex:0 0 auto}
+  .del:hover{background:var(--bg); color:var(--ink)}
+  .empty{color:var(--muted); font-size:13px}
+  .quick{display:flex; gap:6px; flex-wrap:wrap; margin-top:8px}
+  .chip{border:1px dashed var(--line); background:transparent; color:var(--muted); border-radius:999px; padding:3px 11px; font-size:12.5px}
+  .chip:hover{border-style:solid; border-color:var(--accent); color:var(--accent)}
+
+  .calhead{display:flex; align-items:center; justify-content:space-between; gap:8px}
+  .calhead .m{font-family:var(--mono); font-size:14px; font-weight:600}
+  .nav{border:1px solid var(--line); background:var(--surface-2); border-radius:7px; padding:3px 10px; line-height:1.4}
+  .cal{display:grid; grid-template-columns:repeat(7,1fr); gap:4px; margin-top:10px}
+  .cal .dow{text-align:center; font-size:11px; color:var(--muted); padding-bottom:2px}
+  .cal .dow.sat{color:#4a7fa0} .cal .dow.sun{color:#a8604f}
+  @media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .cal .dow.sat{color:#7fb6d6} :root:not([data-theme="light"]) .cal .dow.sun{color:#d59481}}
+  :root[data-theme="dark"] .cal .dow.sat{color:#7fb6d6} :root[data-theme="dark"] .cal .dow.sun{color:#d59481}
+  .cell{aspect-ratio:1/1; max-width:100%; border:1px solid transparent; border-radius:8px; background:var(--surface-2); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px; font-family:var(--mono); font-size:12.5px; padding:0}
+  .cell.blank{background:transparent; cursor:default}
+  .cell.trained{color:var(--accent); font-weight:600}
+  /* 腸の調子でマスの地色を変える */
+  .cell.gutok{background:color-mix(in srgb, var(--ok) 17%, var(--surface-2))}
+  .cell.gutng{background:color-mix(in srgb, var(--alert) 17%, var(--surface-2))}
+  .cell.trained.gutok, .cell.trained.gutng{box-shadow:inset 0 0 0 1px color-mix(in srgb, var(--accent) 45%, transparent)}
+  .cell.trained:not(.gutok):not(.gutng){background:var(--accent-soft)}
+  .cell.today{border-color:var(--muted)}
+  .cell.sel{outline:2px solid var(--accent); outline-offset:1px}
+  .cell .dots{display:flex; gap:2.5px; height:5px; align-items:center}
+  .dot{width:5px; height:5px; border-radius:50%; display:inline-block; flex:0 0 auto}
+  .dot.t{background:var(--accent)} .dot.f{background:var(--food)} .dot.w{background:var(--dotw)} .dot.y{background:var(--yoga)}
+  .box{width:9px; height:9px; border-radius:3px; display:inline-block}
+  .box.ok{background:color-mix(in srgb, var(--ok) 35%, var(--surface-2)); border:1px solid color-mix(in srgb, var(--ok) 55%, transparent)}
+  .box.ng{background:color-mix(in srgb, var(--alert) 35%, var(--surface-2)); border:1px solid color-mix(in srgb, var(--alert) 55%, transparent)}
+  .legend{display:flex; gap:12px; flex-wrap:wrap; align-items:center; margin-top:10px; font-size:11.5px; color:var(--muted)}
+  .legend span{display:flex; align-items:center; gap:5px}
+
+  /* 推移テーブル */
+  .scroller{overflow-x:auto; margin-top:8px}
+  table.trend .tv{display:block; font-weight:600}
+  table.trend .tdiff{display:block; line-height:1.2}
+  table.trend .tdiff .d{margin-left:0}
+  table.trend .tdw{font-family:var(--sans); font-size:11px; color:var(--muted); margin-left:4px}
+  table.trend{border-collapse:collapse; width:100%; min-width:0; font-family:var(--mono); font-variant-numeric:tabular-nums; font-size:12.5px}
+  table.trend.imp{min-width:290px}
+  table.trend th, table.trend td{padding:6px 8px; text-align:right; white-space:nowrap; border-bottom:1px solid var(--line)}
+  table.trend th{font-family:var(--sans); font-size:11px; font-weight:500; letter-spacing:.06em; color:var(--muted); text-align:right}
+  table.trend th:first-child, table.trend td:first-child{text-align:left}
+  table.trend thead tr.g th{border-bottom:none; padding-bottom:0}
+  table.trend th.am{color:var(--am)} table.trend th.pm{color:var(--pm)}
+  table.trend td .d{font-size:10.5px; margin-left:4px}
+  table.trend tbody tr:last-child td{border-bottom:none}
+  /* 折れ線グラフ */
+  .chartwrap{position:relative; margin-top:12px}
+  .chartlegend{display:flex; gap:14px; align-items:center; font-size:12px; color:var(--muted); margin-bottom:2px}
+  .chartlegend b{font-weight:500}
+  .sw{width:14px; height:3px; border-radius:2px; display:inline-block; margin-right:6px; vertical-align:middle}
+  .sw.am{background:var(--c-am)} .sw.pm{background:var(--c-pm)}
+  .chartwrap svg{display:block; width:100%; height:auto; touch-action:pan-y}
+  .tip{
+    position:absolute; pointer-events:none; z-index:2; min-width:112px;
+    background:var(--surface); border:1px solid var(--line); border-radius:8px;
+    padding:7px 9px; font-size:12px; line-height:1.5;
+    box-shadow:0 4px 14px rgba(0,0,0,.14);
+  }
+  .tip .dt{font-family:var(--mono); color:var(--muted); font-size:11px}
+  .tip .v{font-family:var(--mono); font-variant-numeric:tabular-nums}
+  .tip .v b{font-weight:600}
+  .noplot{color:var(--muted); font-size:13px; padding:26px 0; text-align:center}
+
+  .swap{display:flex; gap:6px; margin-top:10px; flex-wrap:wrap}
+  .swap button{border:1px solid var(--line); background:transparent; color:var(--muted); border-radius:999px; padding:3px 12px; font-size:12.5px}
+  .swap button[aria-pressed="true"]{border-color:var(--accent); color:var(--accent); background:var(--accent-soft)}
+
+  /* 取り込み */
+  .hint{color:var(--muted); font-size:12.5px; margin:10px 0 8px; line-height:1.6}
+  .chkline{display:flex; align-items:center; gap:7px; font-size:12.5px; color:var(--muted); flex:1 1 auto}
+  .chkline input{width:17px; height:17px; margin:0; accent-color:var(--accent)}
+  #impResult{margin-top:10px; font-size:13px}
+  #impResult .sum{color:var(--muted); margin-bottom:6px}
+  #impResult .bad{color:var(--alert)}
+  #impResult .done{color:var(--ok); font-weight:500}
+
+  ul.hist{list-style:none; margin:0; padding:0; display:flex; flex-direction:column}
+  ul.hist li{border-top:1px solid var(--line); padding:10px 0; display:flex; gap:12px; align-items:baseline}
+  ul.hist li:first-child{border-top:none}
+  ul.hist .d{font-family:var(--mono); font-size:12.5px; color:var(--muted); flex:0 0 74px}
+  ul.hist .body{flex:1; min-width:0; font-size:13.5px}
+  ul.hist .body .line{overflow-wrap:anywhere}
+  ul.hist .body .meals{color:var(--muted); font-size:12.5px}
+  ul.hist .go{border:none; background:transparent; color:var(--accent); font-size:12.5px; padding:2px 4px}
+  /* 腸の調子が×の日を目立たせる */
+  .gutline{display:inline-block; font-size:12.5px; color:var(--muted); font-family:var(--mono)}
+  .gutline.bad{
+    color:var(--alert); font-weight:600; font-family:var(--sans);
+    background:color-mix(in srgb, var(--alert) 13%, transparent);
+    border:1px solid color-mix(in srgb, var(--alert) 40%, transparent);
+    border-radius:999px; padding:1px 9px;
+  }
+  .gutline.good{
+    color:var(--ok); font-weight:600; font-family:var(--sans);
+    background:color-mix(in srgb, var(--ok) 13%, transparent);
+    border:1px solid color-mix(in srgb, var(--ok) 40%, transparent);
+    border-radius:999px; padding:1px 9px;
+  }
+  ul.hist li.badgut, ul.hist li.goodgut{
+    border-radius:0 6px 6px 0; padding-left:9px; margin-left:-9px;
+  }
+  ul.hist li.badgut{
+    background:color-mix(in srgb, var(--alert) 5%, transparent);
+    box-shadow:inset 3px 0 0 var(--alert);
+  }
+  ul.hist li.goodgut{
+    background:color-mix(in srgb, var(--ok) 5%, transparent);
+    box-shadow:inset 3px 0 0 var(--ok);
+  }
+  footer{margin-top:22px; color:var(--muted); font-size:12px; text-align:center}
+  @media (prefers-reduced-motion:no-preference){ .cell,.btn,.chip,.swap button{transition:background-color .12s ease, color .12s ease, border-color .12s ease} }
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="brand">
+      <h1>トレーニング記録帳</h1>
+      <span class="sub" id="hdrSub">PC・スマホ共通</span>
+    </div>
+    <div class="tiles">
+      <div class="tile"><div class="k">連続</div><div class="v" id="tStreak">0<small>日</small></div></div>
+      <div class="tile"><div class="k">今週</div><div class="v" id="tWeek">0<small>回</small></div></div>
+      <div class="tile"><div class="k">今月</div><div class="v" id="tMonth">0<small>回</small></div></div>
+      <div class="tile am"><div class="k">朝 体重</div><div class="v" id="tAm">—</div></div>
+      <div class="tile pm"><div class="k">夜 体重</div><div class="v" id="tPm">—</div></div>
+    </div>
+    <div class="notice" id="notice" hidden></div>
+  </header>
+
+  <div class="grid">
+    <div class="col">
+      <section class="card">
+        <div class="daybar" id="dayTitle">
+          <button type="button" class="dnav" id="dayPrev" aria-label="前の日">‹</button>
+          <div class="dmain">
+            <div class="dbig"><span id="dayMD"></span><span class="dw" id="dayDow"></span></div>
+            <div class="dsub"><span id="daySub"></span><button type="button" class="dback" id="dayBack" hidden>今日へ戻る</button></div>
+          </div>
+          <button type="button" class="dnav" id="dayNext" aria-label="次の日">›</button>
+        </div>
+
+        <div class="sec">
+          <div class="lbl">トレーニング（種目と量）</div>
+          <ul class="entries" id="setList"></ul>
+          <div class="row" style="margin-top:8px">
+            <input class="field grow" id="exName" list="exList" placeholder="種目（例：スクワット）" autocomplete="off">
+            <input class="field num w-reps" id="exReps" type="number" inputmode="numeric" min="0" step="1" placeholder="数">
+            <select class="field w-unit" id="exUnit" aria-label="単位"></select>
+            <button class="btn" id="exAdd">追加</button>
+          </div>
+          <datalist id="exList"></datalist>
+          <div class="quick" id="quickEx"></div>
+        </div>
+
+        <div class="sec">
+          <div class="lbl">ヨガ（やったらチェック）</div>
+          <div class="habits" id="habits"></div>
+        </div>
+
+        <div class="sec">
+          <div class="lbl">体組成（朝・夜）</div>
+          <div class="slots">
+            <div class="slot am">
+              <h3>朝</h3>
+              <div class="f"><label for="amW">体重</label><input class="field num" id="amW" type="number" inputmode="decimal" step="0.1" min="0" placeholder="—"><span class="u">kg</span></div>
+              <div class="f"><label for="amF">体脂肪率</label><input class="field num" id="amF" type="number" inputmode="decimal" step="0.1" min="0" placeholder="—"><span class="u">%</span></div>
+              <div class="f"><label for="amS">骨格筋率</label><input class="field num" id="amS" type="number" inputmode="decimal" step="0.1" min="0" placeholder="—"><span class="u">%</span></div>
+            </div>
+            <div class="slot pm">
+              <h3>夜</h3>
+              <div class="f"><label for="pmW">体重</label><input class="field num" id="pmW" type="number" inputmode="decimal" step="0.1" min="0" placeholder="—"><span class="u">kg</span></div>
+              <div class="f"><label for="pmF">体脂肪率</label><input class="field num" id="pmF" type="number" inputmode="decimal" step="0.1" min="0" placeholder="—"><span class="u">%</span></div>
+              <div class="f"><label for="pmS">骨格筋率</label><input class="field num" id="pmS" type="number" inputmode="decimal" step="0.1" min="0" placeholder="—"><span class="u">%</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="sec">
+          <div class="lbl">食べたもの</div>
+          <ul class="entries" id="mealList"></ul>
+          <div class="row" style="margin-top:8px">
+            <select class="field w-meal" id="mealSlot">
+              <option>朝</option><option>昼</option><option>夜</option><option>間食</option>
+            </select>
+            <input class="field grow" id="mealText" placeholder="例：鶏むね・ごはん・味噌汁" autocomplete="off">
+            <button class="btn" id="mealAdd">追加</button>
+          </div>
+        </div>
+
+        <div class="sec">
+          <div class="lbl">腸の調子</div>
+          <div class="habits" id="gut"></div>
+        </div>
+
+        <div class="sec">
+          <div class="lbl">メモ・体調</div>
+          <textarea class="field" id="fMemo" placeholder="調子、痛み、気づいたことなど"></textarea>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>体組成の推移<span class="when" id="trendNote"></span></h2>
+        <div class="swap" role="group" aria-label="表示する項目">
+          <button type="button" data-metric="weight" aria-pressed="true">体重</button>
+          <button type="button" data-metric="fat" aria-pressed="false">体脂肪率</button>
+          <button type="button" data-metric="smm" aria-pressed="false">骨格筋率</button>
+        </div>
+        <div class="swap" id="rangeSwap" role="group" aria-label="期間">
+          <button type="button" data-range="30" aria-pressed="true">30日</button>
+          <button type="button" data-range="90" aria-pressed="false">90日</button>
+          <button type="button" data-range="0" aria-pressed="false">全期間</button>
+        </div>
+        <div class="chartwrap">
+          <div class="chartlegend"><span><i class="sw am"></i><b>朝</b></span><span><i class="sw pm"></i><b>夜</b></span></div>
+          <div id="chart"></div>
+          <div class="tip" id="tip" hidden></div>
+        </div>
+        <div class="scroller"><table class="trend" id="trend"></table></div>
+      </section>
+    </div>
+
+    <div class="col">
+      <section class="card">
+        <h2>体重データの取り込み<span class="when">貼り付け</span></h2>
+        <p class="hint">Google Fit／ヘルスコネクトから書き出した、日付・時刻・体重が並んだ行をそのまま貼り付けてください。5:00〜15:59 は朝、16:00〜翌4:59 は夜として入ります。体脂肪率と骨格筋率は手入力のままにしておくのが安全です。</p>
+        <textarea class="field" id="impText" rows="4" placeholder="2026-09-21 07:12 72.0 17.5 33.2&#10;2026-09-21 22:40 72.8 17.9 33.0"></textarea>
+        <div class="row" style="margin-top:8px">
+          <select class="field" id="impSlot" style="flex:0 0 150px">
+            <option value="auto">時刻で朝夜を判定（朝5〜16時）</option>
+            <option value="am">すべて朝として入れる</option>
+            <option value="pm">すべて夜として入れる</option>
+          </select>
+          <label class="chkline"><input type="checkbox" id="impOnlyW" checked> 体重だけ取り込む</label>
+          <label class="chkline"><input type="checkbox" id="impOver"> 既存の値も上書き</label>
+          <button class="btn ghost" id="impCheck">内容を確認</button>
+          <button class="btn" id="impRun" disabled>取り込む</button>
+        </div>
+        <div id="impResult"></div>
+      </section>
+
+      <section class="card">
+        <h2>カレンダー</h2>
+        <div class="calhead" style="margin-top:10px">
+          <button class="nav" id="calPrev" aria-label="前の月">←</button>
+          <div class="m" id="calMonth"></div>
+          <button class="nav" id="calNext" aria-label="次の月">→</button>
+        </div>
+        <div class="cal" id="cal"></div>
+        <div class="legend">
+          <span><i class="dot t"></i>トレーニング</span>
+          <span><i class="dot y"></i>ヨガ</span>
+          <span><i class="dot f"></i>食事</span>
+          <span><i class="dot w"></i>体組成</span>
+          <span><i class="box ok"></i>腸○</span>
+          <span><i class="box ng"></i>腸×</span>
+          <button class="btn ghost sm" id="goToday" style="margin-left:auto">今日へ</button>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>最近の記録</h2>
+        <ul class="hist" id="hist" style="margin-top:8px"></ul>
+      </section>
+    </div>
+  </div>
+  <footer>このページのURLをスマホでも開けば、同じ記録が見られます。</footer>
+</div>
+
+<script>
+(function(){
+  "use strict";
+  var DEFAULT_EX = ["スクワット","腕立て伏せ","腹筋ローラー","懸垂","プランク","ダンベルカール"];
+  var HABITS = [ { key:"amYoga", label:"朝ヨガ" }, { key:"pmYoga", label:"夜ヨガ" } ];
+  // 種目ごとの単位。過去に使った単位があればそれを、なければ種目名から推測する
+  var UNITS = ["回","分","秒","歩","km"];
+  var UNIT_HINTS = [
+    [/ウォーキング|散歩|歩き|歩行/, "歩"],
+    [/サイクリング|自転車|バイク|フィットボクシング|ボクシング|ヨガ|ストレッチ|ランニング|ジョギング|エアロ|有酸素|水泳|踏み台|ダンス|縄跳び|なわとび/, "分"],
+    [/プランク/, "秒"]
+  ];
+  function guessUnit(name){
+    if (!name) return "回";
+    var m = allDays(), keys = [], found = null;
+    m.forEach(function(v,k){ keys.push(k); });
+    keys.sort().reverse();
+    keys.some(function(k){
+      return m.get(k).sets.some(function(s){
+        if (s.name === name && s.unit) { found = s.unit; return true; }
+        return false;
+      });
+    });
+    if (found) return found;
+    for (var i=0;i<UNIT_HINTS.length;i++) if (UNIT_HINTS[i][0].test(name)) return UNIT_HINTS[i][1];
+    return "回";
+  }
+  function unitSelect(value, cls){
+    var sel = document.createElement("select");
+    sel.className = cls || "";
+    sel.setAttribute("aria-label", "単位");
+    UNITS.forEach(function(u){
+      var o = document.createElement("option"); o.value = u; o.textContent = u; sel.appendChild(o);
+    });
+    sel.value = UNITS.indexOf(value) >= 0 ? value : "回";
+    return sel;
+  }
+  var GUT = [ { key:"noon", label:"昼" }, { key:"night", label:"夜" } ];
+  var GUT_MARKS = [
+    { v:"ok", t:"○", cls:"ok", a:"良い" },
+    { v:"mid", t:"△", cls:"mid", a:"ふつう" },
+    { v:"ng", t:"×", cls:"ng", a:"良くない" }
+  ];
+  // upIsGood: 増えたら緑で示す項目（骨格筋率）
+  var METRICS = {
+    weight:{ label:"体重", unit:"kg", upIsGood:false },
+    fat:{ label:"体脂肪率", unit:"%", upIsGood:false },
+    smm:{ label:"骨格筋率", unit:"%", upIsGood:true }
+  };
+  var metric = "weight";
+
+  var pad = function(n){ return String(n).padStart(2,"0"); };
+  var ymd = function(d){ return d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate()); };
+  var parseYmd = function(s){ var p=s.split("-"); return new Date(+p[0], +p[1]-1, +p[2]); };
+  var DOW = ["日","月","火","水","木","金","土"];
+  var uid = function(){ return Date.now().toString(36)+Math.random().toString(36).slice(2,7); };
+  var num = function(v){ return (typeof v === "number" && isFinite(v)) ? v : null; };
+  var f1 = function(v){ return v.toFixed(1); };
+
+  var todayStr = ymd(new Date());
+  var selected = todayStr;
+  var view = { y: new Date().getFullYear(), m: new Date().getMonth() };
+
+  var db = null;
+  var server = new Map();
+  var dirty  = new Map();
+  var queue = Promise.resolve();
+
+  function emptySlot(){ return { weight:null, fat:null, smm:null }; }
+  function emptyHabits(){ var h={}; HABITS.forEach(function(x){ h[x.key]=false; }); return h; }
+  function emptyGut(){ var g={}; GUT.forEach(function(x){ g[x.key]=null; }); return g; }
+  function blank(date){ return { date:date, sets:[], meals:[], habits:emptyHabits(), body:{ am:emptySlot(), pm:emptySlot() }, gut:emptyGut(), memo:"" }; }
+  function readSlot(raw){
+    raw = raw || {};
+    return { weight:num(raw.weight), fat:num(raw.fat), smm:num(raw.smm) };
+  }
+  function normalize(date, raw){
+    raw = raw || {};
+    var b = raw.body || {};
+    var am = readSlot(b.am);
+    // 旧形式（体重・体脂肪が1日1つ）は朝の値として引き継ぐ
+    if (am.weight===null && am.fat===null && am.smm===null && (num(raw.weight)!==null || num(raw.fat)!==null)) {
+      am = { weight:num(raw.weight), fat:num(raw.fat), smm:null };
+    }
+    // 保存されたオブジェクトは凍結されているので、必ず自前のコピーにして編集できるようにする
+    var sets = (Array.isArray(raw.sets) ? raw.sets : [])
+      .filter(function(s){ return s && typeof s === "object"; })
+      .map(function(s){
+        return { id: s.id || uid(), name: String(s.name || ""), reps: num(s.reps),
+                 unit: UNITS.indexOf(s.unit) >= 0 ? s.unit : "回" };
+      });
+    var habits = emptyHabits();
+    HABITS.forEach(function(x){ habits[x.key] = !!(raw.habits && raw.habits[x.key]); });
+    // 旧形式（ヨガを種目として記録していた分）はチェックに移す
+    sets = sets.filter(function(s){
+      var hit = null;
+      HABITS.forEach(function(x){ if (s.name === x.label || s.name === "ヨガ" && x.key === "amYoga") hit = x; });
+      if (hit) { habits[hit.key] = true; return false; }
+      return true;
+    });
+    return {
+      date: date,
+      sets: sets,
+      meals: (Array.isArray(raw.meals) ? raw.meals : [])
+        .filter(function(m){ return m && typeof m === "object"; })
+        .map(function(m){ return { id: m.id || uid(), slot: String(m.slot || "朝"), text: String(m.text || "") }; }),
+      habits: habits,
+      body: { am: am, pm: readSlot(b.pm) },
+      gut: (function(){
+        var g = emptyGut();
+        GUT.forEach(function(x){
+          var v = raw.gut && raw.gut[x.key];
+          g[x.key] = (v === "ok" || v === "mid" || v === "ng") ? v : null;
+        });
+        return g;
+      })(),
+      memo: typeof raw.memo === "string" ? raw.memo : ""
+    };
+  }
+  function getDay(date){
+    if (dirty.has(date)) return dirty.get(date);
+    if (server.has(date)) return server.get(date);
+    return blank(date);
+  }
+  function allDays(){
+    var m = new Map(server);
+    dirty.forEach(function(v,k){ m.set(k,v); });
+    return m;
+  }
+  function hasTraining(d){ return !!(d && d.sets && d.sets.length); }
+  function hasBody(d){
+    if (!d) return false;
+    var s = [d.body.am, d.body.pm], i, k;
+    for (i=0;i<2;i++) for (k in METRICS) if (s[i][k] !== null) return true;
+    return false;
+  }
+  function hasHabit(d){
+    if (!d) return false;
+    for (var i=0;i<HABITS.length;i++) if (d.habits[HABITS[i].key]) return true;
+    return false;
+  }
+  function hasGut(d){
+    if (!d) return false;
+    for (var i=0;i<GUT.length;i++) if (d.gut[GUT[i].key]) return true;
+    return false;
+  }
+  function isEmptyDay(d){
+    return !d || (!d.sets.length && !d.meals.length && !hasBody(d) && !hasHabit(d) && !hasGut(d) && !String(d.memo||"").trim());
+  }
+
+  function save(day){
+    var copy = normalize(day.date, JSON.parse(JSON.stringify(day)));
+    dirty.set(copy.date, copy);
+    renderAll();
+    if (!db) return;
+    queue = queue.then(function(){
+      var ref = db.doc("days/"+copy.date);
+      var body = { date:copy.date, sets:copy.sets, meals:copy.meals, habits:copy.habits, body:copy.body, gut:copy.gut, memo:copy.memo, updatedAt:new Date().toISOString() };
+      var p = isEmptyDay(copy) ? ref.delete() : ref.set(body);
+      return p.then(function(){
+        if (dirty.get(copy.date) === copy) dirty.delete(copy.date);
+      }, function(err){
+        note(err && err.code === "quota_exceeded"
+          ? "保存できる件数の上限に達しました。古い記録を削除してください。"
+          : "保存に失敗しました（" + ((err&&err.code)||"unknown") + "）。もう一度お試しください。");
+      });
+    });
+  }
+  function note(msg){
+    var el = document.getElementById("notice");
+    el.textContent = msg; el.hidden = !msg;
+  }
+
+  /* ---------- 集計 ---------- */
+  function trainedSet(){
+    var s = new Set();
+    allDays().forEach(function(d,k){ if (hasTraining(d)) s.add(k); });
+    return s;
+  }
+  // 朝だけ／夜だけを時系列で取り出す（比較の土台）
+  function series(slotKey, field){
+    var out = [], keys = [], m = allDays();
+    m.forEach(function(v,k){ keys.push(k); });
+    keys.sort();
+    keys.forEach(function(k){
+      var v = m.get(k).body[slotKey][field];
+      if (v !== null) out.push({ date:k, v:v });
+    });
+    return out;
+  }
+  function diffSpan(cur, prev, upIsGood){
+    if (prev === undefined || prev === null) return "";
+    var d = cur - prev;
+    if (Math.abs(d) < 0.05) return '<span class="d" style="color:var(--muted)">±0</span>';
+    var good = upIsGood ? d > 0 : d < 0;
+    return '<span class="d ' + (good ? "down" : "up") + '">' + (d>0?"+":"") + f1(d) + '</span>';
+  }
+
+  function renderTiles(){
+    var t = trainedSet();
+    var streak = 0, cur = new Date();
+    if (!t.has(ymd(cur))) cur.setDate(cur.getDate()-1);
+    while (t.has(ymd(cur))) { streak++; cur.setDate(cur.getDate()-1); }
+
+    var now = new Date();
+    var dow = (now.getDay()+6)%7;
+    var weekStart = new Date(now.getFullYear(), now.getMonth(), now.getDate()-dow);
+    var week = 0, month = 0;
+    t.forEach(function(k){
+      var d = parseYmd(k);
+      if (d >= weekStart && d <= now) week++;
+      if (d.getFullYear()===now.getFullYear() && d.getMonth()===now.getMonth()) month++;
+    });
+    document.getElementById("tStreak").innerHTML = streak + "<small>日</small>";
+    document.getElementById("tWeek").innerHTML = week + "<small>回</small>";
+    document.getElementById("tMonth").innerHTML = month + "<small>回</small>";
+
+    ["am","pm"].forEach(function(sk){
+      var s = series(sk, "weight");
+      var el = document.getElementById(sk === "am" ? "tAm" : "tPm");
+      if (!s.length) { el.innerHTML = "—"; return; }
+      var last = s[s.length-1], prev = s.length>1 ? s[s.length-2].v : null;
+      var d = diffSpan(last.v, prev);
+      // 前回比は必ず次の行へ（スマホで数字の途中で折り返さないように）
+      el.innerHTML = f1(last.v) + "<small>kg</small>" + (d ? '<span class="dline">' + d + "</span>" : "");
+    });
+  }
+
+  /* ---------- ヨガのチェック ---------- */
+  var habitEls = null;
+  function buildHabits(){
+    var box = document.getElementById("habits");
+    habitEls = {};
+    HABITS.forEach(function(h){
+      var lab = document.createElement("label");
+      lab.className = "chk";
+      var cb = document.createElement("input");
+      cb.type = "checkbox"; cb.id = "chk_"+h.key;
+      var nm = document.createElement("span"); nm.className="nm"; nm.textContent = h.label;
+      var ct = document.createElement("span"); ct.className="ct";
+      cb.addEventListener("change", function(){
+        var d = getDay(selected);
+        d.habits[h.key] = cb.checked;
+        save(d);
+      });
+      lab.appendChild(cb); lab.appendChild(nm); lab.appendChild(ct);
+      box.appendChild(lab);
+      habitEls[h.key] = { label:lab, cb:cb, ct:ct };
+    });
+  }
+  function renderHabits(){
+    if (!habitEls) buildHabits();
+    var d = getDay(selected);
+    var now = new Date(), m = allDays();
+    HABITS.forEach(function(h){
+      var on = !!d.habits[h.key];
+      var el = habitEls[h.key];
+      el.cb.checked = on;
+      el.label.classList.toggle("on", on);
+      var count = 0;
+      m.forEach(function(v,k){
+        if (!v.habits[h.key]) return;
+        var dt = parseYmd(k);
+        if (dt.getFullYear()===now.getFullYear() && dt.getMonth()===now.getMonth()) count++;
+      });
+      el.ct.textContent = "今月 " + count + "回";
+    });
+  }
+
+  /* ---------- 腸の調子（○×） ---------- */
+  var gutEls = null;
+  function buildGut(){
+    var box = document.getElementById("gut");
+    gutEls = {};
+    GUT.forEach(function(g){
+      var row = document.createElement("div");
+      row.className = "gutrow";
+      var nm = document.createElement("span"); nm.className="nm"; nm.textContent = g.label;
+      row.appendChild(nm);
+      var marks = {};
+      GUT_MARKS.forEach(function(m){
+        var b = document.createElement("button");
+        b.type="button"; b.className="mk "+m.cls; b.textContent=m.t;
+        b.setAttribute("aria-pressed","false");
+        b.setAttribute("aria-label", g.label + "の腸の調子：" + m.a);
+        b.addEventListener("click", function(){
+          var d = getDay(selected);
+          d.gut[g.key] = (d.gut[g.key] === m.v) ? null : m.v; // もう一度押すと取り消し
+          save(d);
+        });
+        marks[m.v] = b;
+        row.appendChild(b);
+      });
+      box.appendChild(row);
+      gutEls[g.key] = marks;
+    });
+  }
+  function renderGut(){
+    if (!gutEls) buildGut();
+    var d = getDay(selected);
+    GUT.forEach(function(g){
+      GUT_MARKS.forEach(function(m){
+        gutEls[g.key][m.v].setAttribute("aria-pressed", d.gut[g.key] === m.v ? "true" : "false");
+      });
+    });
+  }
+
+  /* ---------- 選択日のパネル ---------- */
+  var lastRenderedDate = null;
+  function renderDay(){
+    var d = getDay(selected);
+    var dt = parseYmd(selected);
+    // 大きな日付＋「今日／昨日／○日前」で、いつの記録を触っているか分かるように
+    var bar = document.getElementById("dayTitle");
+    var diff = Math.round((parseYmd(todayStr) - dt) / 86400000);
+    var rel = diff === 0 ? "今日の記録" : diff === 1 ? "昨日の記録" : diff === 2 ? "おとといの記録"
+            : diff > 0 ? diff + "日前の記録" : (-diff) + "日後（未来）の記録";
+    document.getElementById("dayMD").textContent = (dt.getMonth()+1) + "/" + dt.getDate();
+    var dw = document.getElementById("dayDow");
+    dw.textContent = DOW[dt.getDay()];
+    dw.className = "dw" + (dt.getDay()===6 ? " sat" : dt.getDay()===0 ? " sun" : "");
+    document.getElementById("daySub").textContent = dt.getFullYear() + "年・" + rel;
+    document.getElementById("dayBack").hidden = diff === 0;
+    bar.classList.toggle("past", diff > 0);
+    bar.classList.toggle("future", diff < 0);
+
+    renderSets(d);
+    renderMeals(d);
+
+    var fresh = lastRenderedDate !== selected;
+    BODY_FIELDS.forEach(function(bf){
+      var v = d.body[bf.slot][bf.field];
+      syncField(document.getElementById(bf.id), v===null ? "" : String(v), fresh);
+    });
+    syncField(document.getElementById("fMemo"), d.memo||"", fresh);
+    lastRenderedDate = selected;
+
+    var names = [], seen = {}, keys = [], m = allDays();
+    m.forEach(function(v,k){ keys.push(k); });
+    keys.sort().reverse();
+    keys.forEach(function(k){
+      m.get(k).sets.forEach(function(s){
+        if (s.name && !seen[s.name]) { seen[s.name]=1; names.push(s.name); }
+      });
+    });
+    var dl = document.getElementById("exList"); dl.textContent = "";
+    names.forEach(function(n){ var o=document.createElement("option"); o.value=n; dl.appendChild(o); });
+    // よく使う種目：過去に記録した順 ＋ まだ使っていない定番
+    var picks = names.concat(DEFAULT_EX.filter(function(n){ return !seen[n]; })).slice(0,8);
+    var quick = document.getElementById("quickEx"); quick.textContent = "";
+    picks.forEach(function(n){
+      var b = document.createElement("button");
+      b.type="button"; b.className="chip"; b.textContent = n;
+      b.addEventListener("click", function(){
+        document.getElementById("exName").value = n;
+        var u = document.getElementById("exUnit");
+        u.dataset.touched = ""; u.value = guessUnit(n);
+        document.getElementById("exReps").focus();
+      });
+      quick.appendChild(b);
+    });
+  }
+  /* ---------- 記録した行をあとから編集する ---------- */
+  // 入力中に作り直すと文字が消えるので、行の並びが変わったときだけ組み立て直す
+  var setState = { sig:null, rows:{} };
+  var mealState = { sig:null, rows:{} };
+
+  function bindEdit(el, commit){
+    var t = null;
+    el.addEventListener("input", function(){ clearTimeout(t); t = setTimeout(commit, 700); });
+    el.addEventListener("change", function(){ clearTimeout(t); commit(); });
+    el.addEventListener("blur", function(){ clearTimeout(t); commit(); });
+    el.addEventListener("keydown", function(e){ if (e.key === "Enter"){ e.preventDefault(); el.blur(); } });
+  }
+  function findItem(list, id){
+    var hit = null;
+    list.forEach(function(x){ if (x.id === id) hit = x; });
+    return hit;
+  }
+
+  function renderSets(d){
+    var ul = document.getElementById("setList");
+    var sig = selected + "|" + d.sets.map(function(s){ return s.id; }).join(",");
+    if (sig === setState.sig) {
+      d.sets.forEach(function(s){
+        var r = setState.rows[s.id]; if (!r) return;
+        syncField(r.name, s.name, false);
+        syncField(r.reps, s.reps===null ? "" : String(s.reps), false);
+        syncField(r.unit, s.unit, false);
+      });
+      return;
+    }
+    setState = { sig:sig, rows:{} };
+    ul.textContent = "";
+    if (!d.sets.length) {
+      ul.appendChild(emptyLi("まだ種目がありません。下の欄から追加してください。"));
+      return;
+    }
+    d.sets.forEach(function(s){
+      var li = document.createElement("li");
+      var name = document.createElement("input");
+      name.className = "inline nm"; name.value = s.name; name.setAttribute("list","exList");
+      name.setAttribute("aria-label","種目"); name.autocomplete = "off";
+      var reps = document.createElement("input");
+      reps.className = "inline rp num"; reps.type = "number"; reps.inputMode = "numeric";
+      reps.min = "0"; reps.step = "1"; reps.placeholder = "—";
+      reps.value = s.reps===null ? "" : String(s.reps); reps.setAttribute("aria-label","回数");
+      var unit = unitSelect(s.unit, "inline ut");
+      bindEdit(name, function(){ commitSet(s.id); });
+      bindEdit(reps, function(){ commitSet(s.id); });
+      bindEdit(unit, function(){ commitSet(s.id); });
+      li.appendChild(name); li.appendChild(reps); li.appendChild(unit);
+      li.appendChild(delBtn(function(){
+        var cur = getDay(selected);
+        cur.sets = cur.sets.filter(function(x){ return x.id !== s.id; });
+        save(cur);
+      }));
+      ul.appendChild(li);
+      setState.rows[s.id] = { name:name, reps:reps, unit:unit };
+    });
+  }
+  function commitSet(id){
+    var r = setState.rows[id]; if (!r) return;
+    var d = getDay(selected);
+    var it = findItem(d.sets, id); if (!it) return;
+    var nm = r.name.value.trim();
+    if (!nm) { r.name.value = it.name; nm = it.name; }          // 空のままにはしない
+    var rp = (r.reps.value === "" || isNaN(+r.reps.value)) ? null : Math.max(0, Math.round(+r.reps.value));
+    var ut = r.unit.value;
+    if (it.name === nm && it.reps === rp && it.unit === ut) return;
+    it.name = nm; it.reps = rp; it.unit = ut;
+    save(d);
+  }
+
+  function renderMeals(d){
+    var ul = document.getElementById("mealList");
+    var sig = selected + "|" + d.meals.map(function(m){ return m.id; }).join(",");
+    if (sig === mealState.sig) {
+      d.meals.forEach(function(m){
+        var r = mealState.rows[m.id]; if (!r) return;
+        syncField(r.slot, m.slot, false);
+        syncField(r.text, m.text, false);
+      });
+      return;
+    }
+    mealState = { sig:sig, rows:{} };
+    ul.textContent = "";
+    if (!d.meals.length) {
+      ul.appendChild(emptyLi("食べたものは一言でOK。あとから見返すと役に立ちます。"));
+      return;
+    }
+    d.meals.forEach(function(m){
+      var li = document.createElement("li");
+      var slot = document.createElement("select");
+      slot.className = "inline slot"; slot.setAttribute("aria-label","時間帯");
+      ["朝","昼","夜","間食"].forEach(function(o){
+        var op = document.createElement("option"); op.value = o; op.textContent = o; slot.appendChild(op);
+      });
+      slot.value = m.slot;
+      var text = document.createElement("input");
+      text.className = "inline nm"; text.value = m.text; text.setAttribute("aria-label","食べたもの");
+      text.autocomplete = "off";
+      bindEdit(slot, function(){ commitMeal(m.id); });
+      bindEdit(text, function(){ commitMeal(m.id); });
+      li.appendChild(slot); li.appendChild(text);
+      li.appendChild(delBtn(function(){
+        var cur = getDay(selected);
+        cur.meals = cur.meals.filter(function(x){ return x.id !== m.id; });
+        save(cur);
+      }));
+      ul.appendChild(li);
+      mealState.rows[m.id] = { slot:slot, text:text };
+    });
+  }
+  function commitMeal(id){
+    var r = mealState.rows[id]; if (!r) return;
+    var d = getDay(selected);
+    var it = findItem(d.meals, id); if (!it) return;
+    var tx = r.text.value.trim();
+    if (!tx) { r.text.value = it.text; tx = it.text; }
+    if (it.slot === r.slot.value && it.text === tx) return;
+    it.slot = r.slot.value; it.text = tx;
+    save(d);
+  }
+
+  function emptyLi(text){
+    var li = document.createElement("li");
+    li.className = "empty";
+    li.style.background="transparent"; li.style.border="none"; li.style.padding="2px 0";
+    li.textContent = text;
+    return li;
+  }
+  function delBtn(fn){
+    var bt = document.createElement("button");
+    bt.className="del"; bt.type="button"; bt.setAttribute("aria-label","削除"); bt.textContent="×";
+    bt.addEventListener("click", fn);
+    return bt;
+  }
+  function syncField(el, val, force){
+    if (!el) return;
+    if (force || (document.activeElement !== el && el.value !== val)) el.value = val;
+  }
+
+  /* ---------- 折れ線グラフ（朝・夜の2本） ---------- */
+  var rangeDays = 30;
+  var DAY = 86400000;
+  var chartOff = null;   // 前回のグラフに付けた操作イベントを外すための後片付け
+
+  function rangeFiltered(rows){
+    if (!rangeDays || !rows.length) return rows;
+    var lastT = rows[rows.length-1].t;
+    return rows.filter(function(r){ return r.t > lastT - rangeDays*DAY; });
+  }
+  function seriesPoints(slotKey, field){
+    return series(slotKey, field).map(function(r){ return { t: parseYmd(r.date).getTime(), v: r.v, date: r.date }; });
+  }
+
+  function renderChart(){
+    var host = document.getElementById("chart");
+    var tip = document.getElementById("tip");
+    tip.hidden = true;
+    if (chartOff) { chartOff(); chartOff = null; }
+    var unit = METRICS[metric].unit;
+    var am = rangeFiltered(seriesPoints("am", metric));
+    var pm = rangeFiltered(seriesPoints("pm", metric));
+
+    if (!am.length && !pm.length) {
+      host.innerHTML = '<div class="noplot">' + METRICS[metric].label + 'を2日以上記録すると、ここに朝と夜の折れ線が出ます。</div>';
+      return;
+    }
+
+    var W = Math.max(260, Math.round(host.clientWidth || 560));
+    var H = W < 420 ? 190 : 216;
+    var pad = { l: 40, r: 30, t: 10, b: 24 };
+    var iw = W - pad.l - pad.r, ih = H - pad.t - pad.b;
+
+    var all = am.concat(pm);
+    var t0 = Math.min.apply(null, all.map(function(p){ return p.t; }));
+    var t1 = Math.max.apply(null, all.map(function(p){ return p.t; }));
+    if (t1 === t0) { t0 -= DAY; t1 += DAY; }
+    var lo = Math.min.apply(null, all.map(function(p){ return p.v; }));
+    var hi = Math.max.apply(null, all.map(function(p){ return p.v; }));
+    var span = hi - lo;
+    if (span < 0.4) { var mid=(hi+lo)/2; lo = mid-0.5; hi = mid+0.5; }
+    else { lo -= span*0.12; hi += span*0.12; }
+
+    var x = function(t){ return pad.l + (t - t0) / (t1 - t0) * iw; };
+    var y = function(v){ return pad.t + (1 - (v - lo) / (hi - lo)) * ih; };
+
+    var svg = ['<svg viewBox="0 0 '+W+' '+H+'" width="'+W+'" height="'+H+'" role="img" aria-label="朝と夜の'+METRICS[metric].label+'の推移">'];
+
+    // 目盛り（4本）
+    var ticks = [], i;
+    for (i=0;i<4;i++) ticks.push(lo + (hi-lo)*i/3);
+    ticks.forEach(function(v){
+      var yy = y(v).toFixed(1);
+      svg.push('<line x1="'+pad.l+'" y1="'+yy+'" x2="'+(W-pad.r)+'" y2="'+yy+'" stroke="var(--grid)" stroke-width="1"/>');
+      svg.push('<text x="'+(pad.l-7)+'" y="'+(y(v)+3.5).toFixed(1)+'" text-anchor="end" font-size="10.5" fill="var(--muted)" font-family="var(--mono)">'+v.toFixed(1)+'</text>');
+    });
+
+    // 日付ラベル（左端・中央・右端）
+    [t0, (t0+t1)/2, t1].forEach(function(t, idx){
+      var d = new Date(t);
+      var anchor = idx===0 ? "start" : (idx===2 ? "end" : "middle");
+      svg.push('<text x="'+x(t).toFixed(1)+'" y="'+(H-7)+'" text-anchor="'+anchor+'" font-size="10.5" fill="var(--muted)" font-family="var(--mono)">'+(d.getMonth()+1)+'/'+d.getDate()+'</text>');
+    });
+
+    // 線（記録が5日以上とんだところは切る）
+    function draw(points, color, label){
+      if (!points.length) return;
+      var runs = [[points[0]]], k;
+      for (k=1;k<points.length;k++){
+        if (points[k].t - points[k-1].t > 5*DAY) runs.push([points[k]]);
+        else runs[runs.length-1].push(points[k]);
+      }
+      runs.forEach(function(run){
+        if (run.length > 1) {
+          var d = run.map(function(p,idx){ return (idx?"L":"M") + x(p.t).toFixed(1) + " " + y(p.v).toFixed(1); }).join(" ");
+          svg.push('<path d="'+d+'" fill="none" stroke="'+color+'" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>');
+        }
+      });
+      var r = points.length > 14 ? 0 : 3.2;
+      if (r) points.forEach(function(p){
+        svg.push('<circle cx="'+x(p.t).toFixed(1)+'" cy="'+y(p.v).toFixed(1)+'" r="'+r+'" fill="'+color+'" stroke="var(--surface)" stroke-width="1.5"/>');
+      });
+      // 端の直接ラベル（色だけに頼らない）
+      var last = points[points.length-1];
+      svg.push('<text x="'+(x(last.t)+6).toFixed(1)+'" y="'+(y(last.v)+3.5).toFixed(1)+'" font-size="11" font-weight="600" fill="'+color+'">'+label+'</text>');
+    }
+    draw(am, "var(--c-am)", "朝");
+    draw(pm, "var(--c-pm)", "夜");
+
+    svg.push('<line id="cross" x1="0" y1="'+pad.t+'" x2="0" y2="'+(pad.t+ih)+'" stroke="var(--muted)" stroke-width="1" stroke-dasharray="3 3" opacity="0"/>');
+    svg.push('</svg>');
+    host.innerHTML = svg.join("");
+
+    // ホバー／タップで値を表示
+    var svgEl = host.querySelector("svg");
+    var cross = host.querySelector("#cross");
+    var byT = {};
+    am.forEach(function(p){ (byT[p.t] = byT[p.t] || {}).am = p.v; });
+    pm.forEach(function(p){ (byT[p.t] = byT[p.t] || {}).pm = p.v; });
+    var stamps = Object.keys(byT).map(Number).sort(function(a,b){ return a-b; });
+
+    function move(ev){
+      if (ev.touches && ev.touches.length) ev = ev.touches[0];
+      if (typeof ev.clientX !== "number") return;
+      var box = svgEl.getBoundingClientRect();
+      if (!box.width) return;
+      var scale = W / box.width;
+      var px = (ev.clientX - box.left) * scale;
+      var t = t0 + (px - pad.l) / iw * (t1 - t0);
+      var best = stamps[0], bd = Infinity;
+      stamps.forEach(function(s){ var d = Math.abs(s - t); if (d < bd) { bd = d; best = s; } });
+      var row = byT[best], dt = new Date(best);
+      cross.setAttribute("x1", x(best).toFixed(1));
+      cross.setAttribute("x2", x(best).toFixed(1));
+      cross.setAttribute("opacity", "1");
+      var html = '<div class="dt">' + (dt.getMonth()+1) + '/' + dt.getDate() + '（' + DOW[dt.getDay()] + '）</div>';
+      ["am","pm"].forEach(function(sk){
+        var v = row[sk];
+        html += '<div class="v"><i class="sw '+sk+'"></i>' + (sk==="am"?"朝":"夜") + ' <b>' + (v===undefined ? "—" : f1(v)) + '</b>' + (v===undefined?"":unit) + '</div>';
+      });
+      tip.innerHTML = html;
+      tip.hidden = false;
+      var left = x(best) / scale + 12;
+      if (left + tip.offsetWidth > box.width) left = x(best) / scale - tip.offsetWidth - 12;
+      tip.style.left = Math.max(0, left) + "px";
+      tip.style.top = "18px";
+    }
+    function leave(){ tip.hidden = true; cross.setAttribute("opacity","0"); }
+    var ON = ["pointermove","pointerdown","mousemove","touchstart"];
+    ON.forEach(function(ev){ host.addEventListener(ev, move, {passive:true}); });
+    host.addEventListener("pointerleave", leave);
+    host.addEventListener("mouseleave", leave);
+    chartOff = function(){
+      ON.forEach(function(ev){ host.removeEventListener(ev, move); });
+      host.removeEventListener("pointerleave", leave);
+      host.removeEventListener("mouseleave", leave);
+    };
+  }
+
+  var resizeT = null;
+  window.addEventListener("resize", function(){
+    clearTimeout(resizeT);
+    resizeT = setTimeout(renderChart, 180);
+  });
+  Array.prototype.forEach.call(document.querySelectorAll("#rangeSwap button"), function(b){
+    b.addEventListener("click", function(){
+      rangeDays = +b.getAttribute("data-range");
+      Array.prototype.forEach.call(document.querySelectorAll("#rangeSwap button"), function(x){
+        x.setAttribute("aria-pressed", x === b ? "true" : "false");
+      });
+      renderChart();
+    });
+  });
+
+  /* ---------- 体組成の推移（朝は朝、夜は夜で比較） ---------- */
+  function renderTrend(){
+    var table = document.getElementById("trend");
+    var unit = METRICS[metric].unit, up = METRICS[metric].upIsGood;
+    var am = series("am", metric), pm = series("pm", metric);
+    var prevAm = {}, prevPm = {}, i;
+    for (i=1;i<am.length;i++) prevAm[am[i].date] = am[i-1].v;
+    for (i=1;i<pm.length;i++) prevPm[pm[i].date] = pm[i-1].v;
+    var byDate = {};
+    am.forEach(function(r){ (byDate[r.date] = byDate[r.date] || {}).am = r.v; });
+    pm.forEach(function(r){ (byDate[r.date] = byDate[r.date] || {}).pm = r.v; });
+    var dates = Object.keys(byDate).sort().reverse().slice(0,14);
+
+    table.textContent = "";
+    var note = document.getElementById("trendNote");
+    if (!dates.length) {
+      note.textContent = "";
+      var cap = document.createElement("caption");
+      cap.style.captionSide="top"; cap.style.textAlign="left"; cap.style.color="var(--muted)";
+      cap.style.fontFamily="var(--sans)"; cap.style.fontSize="13px"; cap.style.padding="6px 0";
+      cap.textContent = METRICS[metric].label + "を入れると、朝と夜それぞれの前回比がここに並びます。";
+      table.appendChild(cap);
+      return;
+    }
+    note.textContent = METRICS[metric].label + "（" + unit + "）・前回比つき";
+
+    var thead = document.createElement("thead");
+    var hr = document.createElement("tr");
+    // スマホでも収まるよう、値と前回比を同じマスに縦に並べる（4列）
+    ["日付","朝","夜","夜−朝"].forEach(function(h,idx){
+      var th = document.createElement("th");
+      th.textContent = h;
+      if (idx===1) th.className="am";
+      if (idx===2) th.className="pm";
+      hr.appendChild(th);
+    });
+    thead.appendChild(hr); table.appendChild(thead);
+
+    var tb = document.createElement("tbody");
+    dates.forEach(function(k){
+      var r = byDate[k], dt = parseYmd(k);
+      var tr = document.createElement("tr");
+      var c0 = document.createElement("td");
+      c0.innerHTML = (dt.getMonth()+1)+"/"+dt.getDate()+'<span class="tdw">'+DOW[dt.getDay()]+'</span>';
+      tr.appendChild(c0);
+      function valCell(v, prev){
+        if (v === undefined) return cell("—");
+        var dff = diffSpan(v, prev===undefined ? null : prev, up);
+        return cellHtml('<span class="tv">' + f1(v) + '</span>' + (dff ? '<span class="tdiff">' + dff + '</span>' : ''));
+      }
+      tr.appendChild(valCell(r.am, prevAm[k]));
+      tr.appendChild(valCell(r.pm, prevPm[k]));
+      var gap = (r.am!==undefined && r.pm!==undefined) ? (r.pm - r.am) : null;
+      tr.appendChild(cell(gap===null ? "—" : (gap>0?"+":"") + f1(gap)));
+      tb.appendChild(tr);
+    });
+    table.appendChild(tb);
+  }
+  function cell(text){ var td=document.createElement("td"); td.textContent=text; return td; }
+  function cellHtml(html){ var td=document.createElement("td"); td.innerHTML=html; return td; }
+
+  Array.prototype.forEach.call(document.querySelectorAll(".swap button"), function(b){
+    b.addEventListener("click", function(){
+      metric = b.getAttribute("data-metric");
+      Array.prototype.forEach.call(document.querySelectorAll(".swap button"), function(x){
+        x.setAttribute("aria-pressed", x === b ? "true" : "false");
+      });
+      renderTrend();
+      renderChart();
+    });
+  });
+
+  /* ---------- カレンダー ---------- */
+  function renderCal(){
+    document.getElementById("calMonth").textContent = view.y + "年" + (view.m+1) + "月";
+    var cal = document.getElementById("cal");
+    cal.textContent = "";
+    ["月","火","水","木","金","土","日"].forEach(function(w,i){
+      var h = document.createElement("div");
+      h.className = "dow" + (i===5?" sat":"") + (i===6?" sun":"");
+      h.textContent = w; cal.appendChild(h);
+    });
+    var first = new Date(view.y, view.m, 1);
+    var lead = (first.getDay()+6)%7;
+    var last = new Date(view.y, view.m+1, 0).getDate();
+    for (var i=0;i<lead;i++){ var b=document.createElement("div"); b.className="cell blank"; cal.appendChild(b); }
+    var data = allDays();
+    for (var day=1; day<=last; day++){
+      var key = view.y+"-"+pad(view.m+1)+"-"+pad(day);
+      var d = data.get(key);
+      var gutCls = "";
+      if (d && hasGut(d)) {
+        gutCls = GUT.some(function(g){ return d.gut[g.key] === "ng"; }) ? " gutng"
+               : (GUT.some(function(g){ return d.gut[g.key] === "ok"; }) ? " gutok" : "");
+      }
+      var cell = document.createElement("button");
+      cell.type = "button";
+      cell.className = "cell" + (hasTraining(d)?" trained":"") + gutCls + (key===todayStr?" today":"") + (key===selected?" sel":"");
+      var n = document.createElement("span"); n.textContent = String(day); cell.appendChild(n);
+      var dots = document.createElement("span"); dots.className = "dots";
+      if (hasTraining(d)) dots.appendChild(mkdot("t"));
+      if (hasHabit(d)) dots.appendChild(mkdot("y"));
+      if (d && d.meals && d.meals.length) dots.appendChild(mkdot("f"));
+      if (hasBody(d)) dots.appendChild(mkdot("w"));
+      cell.appendChild(dots);
+      cell.setAttribute("aria-label", (view.m+1)+"月"+day+"日");
+      (function(k){ cell.addEventListener("click", function(){ selected = k; renderAll(); }); })(key);
+      cal.appendChild(cell);
+    }
+  }
+  function mkdot(cls){ var s=document.createElement("i"); s.className="dot "+cls; return s; }
+
+  /* ---------- 履歴 ---------- */
+  function renderHist(){
+    var ul = document.getElementById("hist");
+    ul.textContent = "";
+    var keys = [], m = allDays();
+    m.forEach(function(v,k){ if (!isEmptyDay(v)) keys.push(k); });
+    keys.sort().reverse();
+    if (!keys.length) {
+      var li = document.createElement("li");
+      li.className = "empty";
+      li.textContent = "記録がまだありません。左の欄に今日の分を入れると、ここに並びます。";
+      ul.appendChild(li);
+      return;
+    }
+    keys.slice(0,14).forEach(function(k){
+      var d = m.get(k), dt = parseYmd(k);
+      var li = document.createElement("li");
+      var dd = document.createElement("span");
+      dd.className = "d";
+      dd.textContent = (dt.getMonth()+1)+"/"+dt.getDate()+"（"+DOW[dt.getDay()]+"）";
+      var body = document.createElement("div"); body.className="body";
+      var l1 = document.createElement("div"); l1.className="line";
+      var head = d.sets.map(function(s){ return s.name + " " + (s.reps==null?"":s.reps+(s.unit||"回")); });
+      HABITS.forEach(function(h){ if (d.habits[h.key]) head.push(h.label + " ✓"); });
+      l1.textContent = head.length ? head.join("・") : "トレーニングなし";
+      body.appendChild(l1);
+      var extra = [];
+      if (d.meals.length) extra.push(d.meals.map(function(x){ return (x.slot||"")+"："+x.text; }).join(" / "));
+      ["am","pm"].forEach(function(sk){
+        var s = d.body[sk], parts = [];
+        if (s.weight!==null) parts.push(f1(s.weight)+"kg");
+        if (s.fat!==null) parts.push(f1(s.fat)+"%");
+        if (s.smm!==null) parts.push("筋"+f1(s.smm)+"%");
+        if (parts.length) extra.push((sk==="am"?"朝":"夜") + " " + parts.join(" / "));
+      });
+      if (String(d.memo||"").trim()) extra.push("メモ：" + d.memo.trim());
+      if (extra.length) {
+        var l2 = document.createElement("div"); l2.className="meals"; l2.textContent = extra.join("　");
+        body.appendChild(l2);
+      }
+      if (hasGut(d)) {
+        var bad = GUT.some(function(g){ return d.gut[g.key] === "ng"; });
+        var good = !bad && GUT.some(function(g){ return d.gut[g.key] === "ok"; });
+        var l3 = document.createElement("div"); l3.className = "meals";
+        var gs = document.createElement("span");
+        gs.className = "gutline" + (bad ? " bad" : (good ? " good" : ""));
+        gs.textContent = "腸 " + GUT.filter(function(g){ return d.gut[g.key]; })
+          .map(function(g){
+            var mk = GUT_MARKS.filter(function(x){ return x.v === d.gut[g.key]; })[0];
+            return g.label + (mk ? mk.t : "");
+          }).join(" ");
+        l3.appendChild(gs);
+        body.appendChild(l3);
+        if (bad) li.classList.add("badgut");
+        else if (good) li.classList.add("goodgut");
+      }
+      var go = document.createElement("button");
+      go.type="button"; go.className="go"; go.textContent="開く";
+      go.addEventListener("click", function(){
+        selected = k; view = { y: dt.getFullYear(), m: dt.getMonth() }; renderAll();
+        document.getElementById("dayTitle").scrollIntoView({block:"center", behavior:"smooth"});
+      });
+      li.appendChild(dd); li.appendChild(body); li.appendChild(go);
+      ul.appendChild(li);
+    });
+  }
+
+  function renderAll(){ renderTiles(); renderHabits(); renderGut(); renderDay(); renderChart(); renderTrend(); renderCal(); renderHist(); }
+
+  /* ---------- 操作 ---------- */
+  function addExercise(){
+    var nameEl = document.getElementById("exName"), repsEl = document.getElementById("exReps");
+    var unitEl = document.getElementById("exUnit");
+    var name = nameEl.value.trim();
+    if (!name) { nameEl.focus(); return; }
+    var reps = repsEl.value === "" ? null : Math.max(0, Math.round(+repsEl.value));
+    var d = getDay(selected);
+    d.sets = d.sets.concat([{ id:uid(), name:name, reps:reps, unit:unitEl.value }]);
+    save(d);
+    nameEl.value = ""; repsEl.value = ""; unitEl.value = "回"; nameEl.focus();
+  }
+  // 種目名を入れたら単位を自動で合わせる（手で変えればそちらが優先）
+  function syncAddUnit(){
+    var unitEl = document.getElementById("exUnit");
+    if (unitEl.dataset.touched === "1") return;
+    unitEl.value = guessUnit(document.getElementById("exName").value.trim());
+  }
+  function addMeal(){
+    var textEl = document.getElementById("mealText"), slotEl = document.getElementById("mealSlot");
+    var text = textEl.value.trim();
+    if (!text) { textEl.focus(); return; }
+    var d = getDay(selected);
+    d.meals = d.meals.concat([{ id:uid(), slot:slotEl.value, text:text }]);
+    save(d);
+    textEl.value = ""; textEl.focus();
+  }
+  document.getElementById("exAdd").addEventListener("click", addExercise);
+  document.getElementById("exName").addEventListener("input", syncAddUnit);
+  document.getElementById("exName").addEventListener("change", syncAddUnit);
+  document.getElementById("exUnit").addEventListener("change", function(){ this.dataset.touched = "1"; });
+  document.getElementById("mealAdd").addEventListener("click", addMeal);
+  ["exName","exReps"].forEach(function(id){
+    document.getElementById(id).addEventListener("keydown", function(e){ if (e.key==="Enter"){ e.preventDefault(); addExercise(); } });
+  });
+  document.getElementById("mealText").addEventListener("keydown", function(e){ if (e.key==="Enter"){ e.preventDefault(); addMeal(); } });
+
+  var BODY_FIELDS = [
+    { id:"amW", slot:"am", field:"weight" }, { id:"amF", slot:"am", field:"fat" }, { id:"amS", slot:"am", field:"smm" },
+    { id:"pmW", slot:"pm", field:"weight" }, { id:"pmF", slot:"pm", field:"fat" }, { id:"pmS", slot:"pm", field:"smm" }
+  ];
+  var timers = {};
+  function debouncedField(id, apply){
+    var el = document.getElementById(id);
+    var commit = function(){
+      var d = getDay(selected);
+      apply(d, el.value);
+      save(d);
+    };
+    el.addEventListener("input", function(){
+      clearTimeout(timers[id]);
+      timers[id] = setTimeout(commit, 700);
+    });
+    el.addEventListener("blur", function(){ clearTimeout(timers[id]); commit(); });
+  }
+  BODY_FIELDS.forEach(function(bf){
+    debouncedField(bf.id, function(d, v){
+      d.body[bf.slot][bf.field] = (v === "" || isNaN(+v)) ? null : +(+v).toFixed(1);
+    });
+  });
+  debouncedField("fMemo", function(d,v){ d.memo = v; });
+
+  document.getElementById("calPrev").addEventListener("click", function(){
+    view.m--; if (view.m<0){ view.m=11; view.y--; } renderCal();
+  });
+  document.getElementById("calNext").addEventListener("click", function(){
+    view.m++; if (view.m>11){ view.m=0; view.y++; } renderCal();
+  });
+  function goDate(dateStr){
+    // 入力途中の欄があれば先に保存してから日付を切り替える
+    if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
+    selected = dateStr;
+    var d = parseYmd(dateStr);
+    view = { y:d.getFullYear(), m:d.getMonth() };
+    renderAll();
+  }
+  function shiftDay(n){
+    var d = parseYmd(selected); d.setDate(d.getDate() + n); goDate(ymd(d));
+  }
+  document.getElementById("goToday").addEventListener("click", function(){ goDate(ymd(new Date())); });
+  document.getElementById("dayBack").addEventListener("click", function(){ goDate(ymd(new Date())); });
+  document.getElementById("dayPrev").addEventListener("click", function(){ shiftDay(-1); });
+  document.getElementById("dayNext").addEventListener("click", function(){ shiftDay(1); });
+
+  // 追加欄の単位リスト
+  (function(){
+    var sel = document.getElementById("exUnit");
+    UNITS.forEach(function(u){
+      var o = document.createElement("option"); o.value = u; o.textContent = u; sel.appendChild(o);
+    });
+    sel.value = "回";
+  })();
+
+  renderAll();
+
+  /* ---------- 日付またぎ（開きっぱなしでも「今日」を追いかける） ---------- */
+  function checkRollover(){
+    var now = ymd(new Date());
+    if (now === todayStr) return;
+    var wasToday = (selected === todayStr);
+    var typing = document.activeElement &&
+      /^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement.tagName);
+    todayStr = now;
+    if (wasToday && !typing) {   // 入力中なら勝手に動かさない
+      selected = now;
+      var d = parseYmd(now);
+      view = { y:d.getFullYear(), m:d.getMonth() };
+    }
+    renderAll();
+  }
+  setInterval(checkRollover, 60000);
+  window.addEventListener("focus", checkRollover);
+  document.addEventListener("visibilitychange", function(){ if (!document.hidden) checkRollover(); });
+
+  /* ---------- 体重データの貼り付け取り込み ---------- */
+  var parsed = [];
+
+  function parseLine(line, mode, onlyWeight){
+    var s = " " + line.replace(/[／]/g,"/").replace(/[：]/g,":") + " ";
+    var date = null, m;
+    if ((m = s.match(/(\d{4})[-\/年](\d{1,2})[-\/月](\d{1,2})/))) {
+      date = m[1] + "-" + pad(+m[2]) + "-" + pad(+m[3]);
+      s = s.replace(m[0], " ");
+    } else if ((m = s.match(/(?:^|[^\d])(\d{1,2})[-\/](\d{1,2})(?![\d:])/))) {
+      date = new Date().getFullYear() + "-" + pad(+m[1]) + "-" + pad(+m[2]);
+      s = s.replace(m[0], " ");
+    } else return null;
+
+    var slot = mode === "auto" ? null : mode;
+    if ((m = s.match(/(\d{1,2}):(\d{2})/))) {
+      // 5:00〜15:59 は朝、16:00〜翌4:59 は夜
+      if (slot === null) { var h = +m[1]; slot = (h >= 5 && h < 16) ? "am" : "pm"; }
+      s = s.replace(m[0], " ");
+    }
+    if (slot === null) slot = "am";   // 時刻がない行は朝あつかい
+
+    // 残った数字を 体重 → 体脂肪 → 骨格筋 の順に当てる（単位があればそれを優先）
+    var out = { date:date, slot:slot, weight:null, fat:null, smm:null };
+    var re = /(-?\d+(?:\.\d+)?)\s*(kg|キロ|%|％)?/gi, tok, rest = [];
+    while ((tok = re.exec(s))) {
+      var v = parseFloat(tok[1]), u = (tok[2]||"").toLowerCase();
+      if (!isFinite(v)) continue;
+      if (u === "kg" || u === "キロ") { if (out.weight === null && v >= 20 && v <= 300) out.weight = v; else rest.push(v); }
+      else if (u === "%" || u === "％") {
+        if (out.fat === null && v > 0 && v < 70) out.fat = v;
+        else if (out.smm === null && v > 0 && v < 70) out.smm = v;
+      } else rest.push(v);
+    }
+    rest.forEach(function(v){
+      if (out.weight === null && v >= 20 && v <= 300) out.weight = v;
+      else if (out.fat === null && v > 0 && v < 70) out.fat = v;
+      else if (out.smm === null && v > 0 && v < 70) out.smm = v;
+    });
+    if (onlyWeight) { out.fat = null; out.smm = null; }   // 体重だけ取り込む（余計な列を拾わない）
+    if (out.weight === null && out.fat === null && out.smm === null) return null;
+    ["weight","fat","smm"].forEach(function(k){ if (out[k] !== null) out[k] = +out[k].toFixed(1); });
+    return out;
+  }
+
+  function previewImport(){
+    var text = document.getElementById("impText").value;
+    var mode = document.getElementById("impSlot").value;
+    var onlyW = document.getElementById("impOnlyW").checked;
+    var box = document.getElementById("impResult");
+    var runBtn = document.getElementById("impRun");
+    var lines = text.split(/\r?\n/);
+    parsed = []; var skipped = 0;
+    lines.forEach(function(line){
+      if (!line.trim()) return;
+      var r = parseLine(line, mode, onlyW);
+      if (r) parsed.push(r); else skipped++;
+    });
+    if (parsed.length > 400) { parsed = parsed.slice(0,400); }
+    box.textContent = "";
+    runBtn.disabled = !parsed.length;
+    if (!parsed.length) {
+      box.innerHTML = '<div class="sum bad">日付と数値が読み取れませんでした。「2026-09-21 07:12 72.0」のように、日付と体重が同じ行にあるか確認してください。</div>';
+      return;
+    }
+    var newDays = {}, m = allDays();
+    parsed.forEach(function(r){ if (!m.has(r.date)) newDays[r.date] = 1; });
+    var sum = document.createElement("div");
+    sum.className = "sum";
+    sum.textContent = parsed.length + "件を読み取りました（新しい日付 " + Object.keys(newDays).length + "日）"
+      + (skipped ? " / 読み取れなかった行 " + skipped : "");
+    box.appendChild(sum);
+
+    var t = document.createElement("table");
+    t.className = "trend imp";
+    var head = document.createElement("tr");
+    ["日付","朝夜","体重","体脂肪","骨格筋"].forEach(function(h){
+      var th = document.createElement("th"); th.textContent = h; head.appendChild(th);
+    });
+    var thead = document.createElement("thead"); thead.appendChild(head); t.appendChild(thead);
+    var tb = document.createElement("tbody");
+    parsed.slice(0,8).forEach(function(r){
+      var tr = document.createElement("tr");
+      [r.date.slice(5).replace("-","/"), r.slot==="am"?"朝":"夜",
+       r.weight===null?"—":f1(r.weight), r.fat===null?"—":f1(r.fat), r.smm===null?"—":f1(r.smm)
+      ].forEach(function(v){ var td=document.createElement("td"); td.textContent=v; tr.appendChild(td); });
+      tb.appendChild(tr);
+    });
+    t.appendChild(tb);
+    var sc = document.createElement("div"); sc.className="scroller"; sc.appendChild(t);
+    box.appendChild(sc);
+    if (parsed.length > 8) {
+      var more = document.createElement("div");
+      more.className = "sum"; more.style.marginTop = "6px";
+      more.textContent = "…ほか " + (parsed.length - 8) + "件";
+      box.appendChild(more);
+    }
+  }
+
+  function runImport(){
+    if (!parsed.length) return;
+    var over = document.getElementById("impOver").checked;
+    var byDate = {};
+    parsed.forEach(function(r){ (byDate[r.date] = byDate[r.date] || []).push(r); });
+    var dates = Object.keys(byDate).sort(), changed = 0;
+    dates.forEach(function(date){
+      var day = JSON.parse(JSON.stringify(getDay(date)));
+      var touched = false;
+      byDate[date].forEach(function(r){
+        ["weight","fat","smm"].forEach(function(k){
+          if (r[k] === null) return;
+          if (!over && day.body[r.slot][k] !== null) return;
+          if (day.body[r.slot][k] === r[k]) return;
+          day.body[r.slot][k] = r[k];
+          touched = true;
+        });
+      });
+      if (touched) { save(day); changed++; }
+    });
+    var box = document.getElementById("impResult");
+    box.textContent = "";
+    var msg = document.createElement("div");
+    msg.className = "sum done";
+    msg.textContent = changed
+      ? changed + "日分を取り込みました。カレンダーと推移に反映されています。"
+      : "新しく入る値はありませんでした（「既存の値も上書き」を入れると置き換えられます）。";
+    box.appendChild(msg);
+    document.getElementById("impRun").disabled = true;
+    parsed = [];
+    if (changed) document.getElementById("impText").value = "";
+  }
+
+  document.getElementById("impCheck").addEventListener("click", previewImport);
+  document.getElementById("impRun").addEventListener("click", runImport);
+  ["impText","impSlot","impOnlyW","impOver"].forEach(function(id){
+    document.getElementById(id).addEventListener("input", function(){
+      document.getElementById("impRun").disabled = true;
+    });
+  });
+
+  /* ---------- 保存先の接続 ---------- */
+  (function connect(){
+    if (!(window.claude && typeof window.claude.use === "function")) {
+      note("このプレビューでは記録は保存されません。公開されたページを開くと、PC・スマホで同じ記録が共有されます。");
+      return;
+    }
+    window.claude.use("db").then(function(store){
+      if (!store) {
+        note("記録の保存に接続できませんでした。入力はこのページを開いている間だけ保持されます。");
+        return;
+      }
+      db = store;
+      document.getElementById("hdrSub").textContent = "PC・スマホ共通 / 自動保存";
+      store.collection("days").orderBy("date","desc").limit(400).onSnapshot(function(snap){
+        var next = new Map();
+        snap.docs.forEach(function(doc){ next.set(doc.id, normalize(doc.id, doc.data())); });
+        server = next;
+        renderAll();
+      }, function(err){
+        note("記録の読み込みが止まりました（" + ((err&&err.code)||"unknown") + "）。ページを再読み込みしてください。");
+      });
+    }, function(){
+      note("記録の保存に接続できませんでした。入力はこのページを開いている間だけ保持されます。");
+    });
+  })();
+})();
+</script>
+
+</body></html>
