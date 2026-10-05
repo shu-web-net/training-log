@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { addDays, todayStr } from "@/lib/date";
 import { createClient } from "@/lib/supabase/client";
 import { loadDays, loadMonthHabits } from "@/lib/day";
@@ -76,6 +76,12 @@ export default function RecordScreen({
       cancelled = true;
     };
   }, [supabase, savedTick]);
+
+  // カレンダーへ渡す取得関数（Supabase 版）。再生成でループしないよう固定する。
+  const loadCalendarRange = useCallback(
+    (from: string, to: string) => loadDays(supabase, from, to),
+    [supabase],
+  );
 
   // タイル集計では、編集中の日は保存前でも最新の状態を反映する。
   const tilesDays = useMemo(() => {
@@ -201,8 +207,8 @@ export default function RecordScreen({
       )}
 
       <Calendar
-        supabase={supabase}
-        savedTick={savedTick}
+        loadRange={loadCalendarRange}
+        refreshKey={savedTick}
         selectedDate={date}
         liveDay={day}
         onSelect={setDate}

@@ -52,8 +52,17 @@ function gutInfo(d: DayRecord): { text: string; bad: boolean; good: boolean } | 
   return { text: `腸 ${entries.join(" ")}`, bad, good };
 }
 
-/** 最近の記録一覧（直近14件）。クリックでその日の記録を開く。 */
-export default function RecentRecords({ days }: { days: DayRecord[] }) {
+/**
+ * 最近の記録一覧（直近14件）。
+ * onOpen があれば画面内で日付を選ぶ（デモ用）。無ければ記録画面へ遷移する。
+ */
+export default function RecentRecords({
+  days,
+  onOpen,
+}: {
+  days: DayRecord[];
+  onOpen?: (date: string) => void;
+}) {
   const recent = days
     .filter((d) => !isEmptyDay(d))
     .sort((a, b) => (a.date < b.date ? 1 : -1))
@@ -107,12 +116,22 @@ export default function RecentRecords({ days }: { days: DayRecord[] }) {
                 </div>
               )}
             </div>
-            <Link
-              href={`/app?date=${d.date}`}
-              className="flex-none text-xs text-sky-700 hover:underline"
-            >
-              開く
-            </Link>
+            {onOpen ? (
+              <button
+                type="button"
+                onClick={() => onOpen(d.date)}
+                className="flex-none text-xs text-sky-700 hover:underline"
+              >
+                開く
+              </button>
+            ) : (
+              <Link
+                href={`/app?date=${d.date}`}
+                className="flex-none text-xs text-sky-700 hover:underline"
+              >
+                開く
+              </Link>
+            )}
           </li>
         );
       })}

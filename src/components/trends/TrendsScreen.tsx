@@ -7,6 +7,7 @@ import { loadDays } from "@/lib/day";
 import { measureSeries } from "@/lib/stats";
 import WeightChart, { type ChartPoint } from "@/components/trends/WeightChart";
 import RecentRecords from "@/components/trends/RecentRecords";
+import Switcher from "@/components/ui/Switcher";
 import type { BodyMeasure, DayRecord } from "@/types/day";
 
 type Metric = keyof BodyMeasure;
@@ -160,40 +161,6 @@ export default function TrendsScreen() {
           <RecentRecords days={days} />
         )}
       </section>
-    </div>
-  );
-}
-
-/** 丸いトグル群（項目・期間で共用）。 */
-function Switcher<T extends string | number>({
-  options,
-  value,
-  onChange,
-}: {
-  options: { value: T; label: string }[];
-  value: T;
-  onChange: (v: T) => void;
-}) {
-  return (
-    <div className="flex flex-wrap gap-1.5" role="group">
-      {options.map((o) => {
-        const on = o.value === value;
-        return (
-          <button
-            key={String(o.value)}
-            type="button"
-            aria-pressed={on}
-            onClick={() => onChange(o.value)}
-            className={`rounded-full border px-3 py-1 text-xs ${
-              on
-                ? "border-slate-900 bg-slate-900 text-white"
-                : "border-slate-300 text-slate-500 hover:border-slate-500"
-            }`}
-          >
-            {o.label}
-          </button>
-        );
-      })}
     </div>
   );
 }

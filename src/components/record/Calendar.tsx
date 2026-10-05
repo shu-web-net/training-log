@@ -1,8 +1,6 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import type { SupabaseClient } from "@supabase/supabase-js";
-import { loadDays } from "@/lib/day";
 import { hasBody, hasMeals, hasTraining, hasYoga } from "@/lib/stats";
 import { todayStr, ymd } from "@/lib/date";
 import type { DayRecord } from "@/types/day";
@@ -18,14 +16,16 @@ function gutTone(d: DayRecord | undefined): "ok" | "ng" | "" {
 }
 
 export default function Calendar({
-  supabase,
-  savedTick,
+  loadRange,
+  refreshKey = 0,
   selectedDate,
   liveDay,
   onSelect,
 }: {
-  supabase: SupabaseClient;
-  savedTick: number;
+  /** 表示月ぶんの記録を取得する（本番は Supabase、デモは架空データ）。 */
+  loadRange: (from: string, to: string) => Promise<DayRecord[]>;
+  /** この値が変わると読み直す（本番は保存のたび）。 */
+  refreshKey?: number;
   selectedDate: string;
   liveDay: DayRecord | null;
   onSelect: (date: string) => void;
@@ -42,7 +42,7 @@ export default function Calendar({
   const [days, setDays] = useState<DayRecord[]>([]);
   useEffect(() => {
     let cancelled = false;
-    loadDays(supabase, monthFrom, monthTo)
+    loadRange(monthFrom, monthTo)
       .then((rows) => {
         if (!cancelled) setDays(rows);
       })
@@ -52,7 +52,7 @@ export default function Calendar({
     return () => {
       cancelled = true;
     };
-  }, [supabase, monthFrom, monthTo, savedTick]);
+  }, [loadRange, monthFrom, monthTo, refreshKey]);
 
   // 日付→記録のマップ。編集中の日は保存前でも最新を反映する。
   const map = useMemo(() => {
