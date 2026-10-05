@@ -23,6 +23,7 @@ export function useDayRecord(userId: string, date: string) {
   const supabase = useMemo(() => createClient(), []);
   const [day, setDay] = useState<DayRecord | null>(null);
   const [status, setStatus] = useState<SaveStatus>("idle");
+  const [savedTick, setSavedTick] = useState(0); // 保存成功のたびに増える（集計の再読込用）
 
   const dirtyRef = useRef<DayRecord | null>(null); // 未保存の最新。null なら保存待ちなし
   const savingRef = useRef(false);
@@ -47,6 +48,7 @@ export function useDayRecord(userId: string, date: string) {
         }
       }
       setStatus("saved");
+      setSavedTick((n) => n + 1);
     } finally {
       savingRef.current = false;
     }
@@ -107,5 +109,5 @@ export function useDayRecord(userId: string, date: string) {
   /** 保存に失敗したときの再試行。 */
   const retry = useCallback(() => void flush(), [flush]);
 
-  return { day, loading, status, update, retry };
+  return { day, loading, status, savedTick, update, retry };
 }

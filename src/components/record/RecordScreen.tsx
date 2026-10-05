@@ -1,19 +1,65 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { addDays, todayStr } from "@/lib/date";
+import { createClient } from "@/lib/supabase/client";
+import { loadMonthHabits } from "@/lib/day";
 import { useDayRecord } from "@/lib/useDayRecord";
 import DateBar from "@/components/record/DateBar";
 import SaveStatus from "@/components/record/SaveStatus";
 import TrainingSection from "@/components/record/TrainingSection";
+import YogaSection from "@/components/record/YogaSection";
 import BodySection from "@/components/record/BodySection";
+import MealsSection from "@/components/record/MealsSection";
+import GutSection from "@/components/record/GutSection";
 import MemoSection from "@/components/record/MemoSection";
-import type { BodyMeasure, TrainingSet } from "@/types/day";
+import type {
+  BodyMeasure,
+  Habits,
+  Meal,
+  TrainingSet,
+} from "@/types/day";
 
 /** 記録画面（メイン）。日付の移動と各入力を自動保存につなぐ。 */
 export default function RecordScreen({ userId }: { userId: string }) {
+  const supabase = useMemo(() => createClient(), []);
   const [date, setDate] = useState<string>(todayStr());
-  const { day, loading, status, update, retry } = useDayRecord(userId, date);
+  const { day, loading, status, savedTick, update, retry } = useDayRecord(
+    userId,
+    date,
+  );
+
+  // 今月のヨガ記録（回数表示用）。月が変わるか、保存が成功するたびに読み直す。
+  const monthKey = date.slice(0, 7);
+  const [monthHabits, setMonthHabits] = useState<Record<string, Habits>>({});
+  useEffect(() => {
+    let cancelled = false;
+    loadMonthHabits(supabase, date)
+      .then((m) => {
+        if (!cancelled) setMonthHabits(m);
+      })
+      .catch(() => {
+        /* 集計は補助情報なので、失敗しても記録操作は止めない */
+      });
+    return () => {
+      cancelled = true;
+    };
+    // 日付が変わるか、保存が成功するたびに読み直す（最大31行なので軽い）
+  }, [supabase, date, savedTick]);
+
+  // 今月の回数。編集中の日は保存前でも最新の状態を反映する（DBの値より優先）。
+  const monthCounts = useMemo<Record<keyof Habits, number>>(() => {
+    const merged: Record<string, Habits> = { ...monthHabits };
+    if (day) merged[date] = day.habits;
+    let amYoga = 0;
+    let pmYoga = 0;
+    for (const [k, h] of Object.entries(merged)) {
+      if (k.slice(0, 7) !== monthKey) continue;
+      if (h.amYoga) amYoga++;
+      if (h.pmYoga) pmYoga++;
+    }
+    return { amYoga, pmYoga };
+  }, [monthHabits, day, date, monthKey]);
 
   return (
     <div className="space-y-4">
@@ -30,9 +76,7 @@ export default function RecordScreen({ userId }: { userId: string }) {
       />
 
       {loading || day === null ? (
-        <p className="py-10 text-center text-sm text-slate-400">
-          読み込み中…
-        </p>
+        <p className="py-10 text-center text-sm text-slate-400">読み込み中…</p>
       ) : (
         <div className="space-y-6 rounded-lg border border-slate-200 bg-white p-4">
           <TrainingSection
@@ -56,6 +100,17 @@ export default function RecordScreen({ userId }: { userId: string }) {
             }
           />
 
+          <YogaSection
+            habits={day.habits}
+            monthCounts={monthCounts}
+            onToggle={(key, value) =>
+              update((prev) => ({
+                ...prev,
+                habits: { ...prev.habits, [key]: value },
+              }))
+            }
+          />
+
           <BodySection
             body={day.body}
             onChange={(slot, field: keyof BodyMeasure, value) =>
@@ -65,6 +120,37 @@ export default function RecordScreen({ userId }: { userId: string }) {
                   ...prev.body,
                   [slot]: { ...prev.body[slot], [field]: value },
                 },
+              }))
+            }
+          />
+
+          <MealsSection
+            meals={day.meals}
+            onAdd={(meal: Meal) =>
+              update((prev) => ({ ...prev, meals: [...prev.meals, meal] }))
+            }
+            onUpdate={(id, patch) =>
+              update((prev) => ({
+                ...prev,
+                meals: prev.meals.map((m) =>
+                  m.id === id ? { ...m, ...patch } : m,
+                ),
+              }))
+            }
+            onRemove={(id) =>
+              update((prev) => ({
+                ...prev,
+                meals: prev.meals.filter((m) => m.id !== id),
+              }))
+            }
+          />
+
+          <GutSection
+            gut={day.gut}
+            onSet={(key, value) =>
+              update((prev) => ({
+                ...prev,
+                gut: { ...prev.gut, [key]: value },
               }))
             }
           />

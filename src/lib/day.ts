@@ -1,8 +1,10 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
+import { parseYmd, ymd } from "@/lib/date";
 import type {
   Body,
   BodyMeasure,
   DayRecord,
+  Habits,
   TrainingSet,
   Unit,
 } from "@/types/day";
@@ -111,6 +113,34 @@ export function isEmptyDay(d: DayRecord): boolean {
     !d.gut.night &&
     d.memo.trim() === ""
   );
+}
+
+/**
+ * 指定日が属する月の、ヨガのチェック状況を日付ごとに読み込む。
+ * 「今月の回数」を出すために使う（365行規模でも軽いので月単位でまとめて取得）。
+ */
+export async function loadMonthHabits(
+  supabase: SupabaseClient,
+  date: string,
+): Promise<Record<string, Habits>> {
+  const monthStart = `${date.slice(0, 7)}-01`;
+  const first = parseYmd(monthStart);
+  const nextMonth = ymd(new Date(first.getFullYear(), first.getMonth() + 1, 1));
+
+  const { data, error } = await supabase
+    .from("days")
+    .select("date, habits")
+    .gte("date", monthStart)
+    .lt("date", nextMonth);
+
+  if (error) throw error;
+
+  const out: Record<string, Habits> = {};
+  for (const row of data ?? []) {
+    const h = (row.habits ?? {}) as Record<string, unknown>;
+    out[row.date as string] = { amYoga: !!h.amYoga, pmYoga: !!h.pmYoga };
+  }
+  return out;
 }
 
 /** その日の記録を読み込む。無ければ空の日を返す。 */
