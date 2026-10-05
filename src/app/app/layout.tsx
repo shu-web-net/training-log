@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import LogoutButton from "@/components/auth/LogoutButton";
@@ -24,8 +25,24 @@ export default async function AppLayout({
   return (
     <div className="min-h-dvh bg-slate-50">
       <header className="border-b border-slate-200 bg-white">
-        <div className="mx-auto flex max-w-3xl items-center justify-between px-4 py-3">
-          <span className="font-bold text-slate-900">トレーニング記録</span>
+        <div className="mx-auto flex max-w-3xl items-center justify-between gap-3 px-4 py-3">
+          <div className="flex items-center gap-4">
+            <span className="font-bold text-slate-900">トレーニング記録</span>
+            <nav className="flex items-center gap-1 text-sm">
+              <Link
+                href="/app"
+                className="rounded-md px-2.5 py-1 text-slate-600 hover:bg-slate-100"
+              >
+                記録
+              </Link>
+              <Link
+                href="/app/trends"
+                className="rounded-md px-2.5 py-1 text-slate-600 hover:bg-slate-100"
+              >
+                推移
+              </Link>
+            </nav>
+          </div>
           <div className="flex items-center gap-3">
             <span className="hidden text-sm text-slate-500 sm:inline">
               {user.email}

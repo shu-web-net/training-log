@@ -24,9 +24,19 @@ import type {
 } from "@/types/day";
 
 /** 記録画面（メイン）。日付の移動と各入力を自動保存につなぐ。 */
-export default function RecordScreen({ userId }: { userId: string }) {
+export default function RecordScreen({
+  userId,
+  initialDate,
+}: {
+  userId: string;
+  initialDate?: string;
+}) {
   const supabase = useMemo(() => createClient(), []);
-  const [date, setDate] = useState<string>(todayStr());
+  const [date, setDate] = useState<string>(
+    initialDate && /^\d{4}-\d{2}-\d{2}$/.test(initialDate)
+      ? initialDate
+      : todayStr(),
+  );
   const { day, loading, status, savedTick, update, retry } = useDayRecord(
     userId,
     date,

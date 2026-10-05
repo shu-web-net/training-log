@@ -6,7 +6,11 @@ import RecordScreen from "@/components/record/RecordScreen";
  * 記録画面（メイン）。
  * レイアウトでログイン必須を担保しているが、保存に user_id が要るのでここでも取得する。
  */
-export default async function AppPage() {
+export default async function AppPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ date?: string }>;
+}) {
   const supabase = await createClient();
   const {
     data: { user },
@@ -16,5 +20,6 @@ export default async function AppPage() {
     redirect("/login");
   }
 
-  return <RecordScreen userId={user.id} />;
+  const { date } = await searchParams;
+  return <RecordScreen userId={user.id} initialDate={date} />;
 }

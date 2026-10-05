@@ -70,15 +70,24 @@ export function monthCount(trained: Set<string>, today = todayStr()): number {
   return n;
 }
 
-/** ある時点の体重（朝 or 夜）を時系列で取り出す。比較の土台。 */
+/** 体組成のある項目（朝 or 夜 × 体重/体脂肪/骨格筋）を時系列で取り出す。 */
+export function measureSeries(
+  days: DayRecord[],
+  slot: "am" | "pm",
+  field: keyof BodyMeasure,
+): { date: string; v: number }[] {
+  return days
+    .filter((d) => d.body[slot][field] !== null)
+    .map((d) => ({ date: d.date, v: d.body[slot][field] as number }))
+    .sort((a, b) => (a.date < b.date ? -1 : 1));
+}
+
+/** 体重（朝 or 夜）を時系列で取り出す。タイルの比較の土台。 */
 export function weightSeries(
   days: DayRecord[],
   slot: "am" | "pm",
 ): { date: string; v: number }[] {
-  return days
-    .filter((d) => d.body[slot].weight !== null)
-    .map((d) => ({ date: d.date, v: d.body[slot].weight as number }))
-    .sort((a, b) => (a.date < b.date ? -1 : 1));
+  return measureSeries(days, slot, "weight");
 }
 
 /** 最新の体重と、その1つ前との差分。タイル表示用。 */
