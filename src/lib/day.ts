@@ -143,6 +143,27 @@ export async function loadMonthHabits(
   return out;
 }
 
+/**
+ * 期間内（from〜to、両端含む）の記録をまとめて読み込む。
+ * 集計タイル・カレンダー・グラフ・履歴が共通で使う土台。
+ * 1年分（365行程度）でも軽いので、範囲取得して画面側で絞り込む方針（CLAUDE.md）。
+ */
+export async function loadDays(
+  supabase: SupabaseClient,
+  from: string,
+  to: string,
+): Promise<DayRecord[]> {
+  const { data, error } = await supabase
+    .from("days")
+    .select("date, sets, body, meals, habits, gut, memo")
+    .gte("date", from)
+    .lte("date", to)
+    .order("date", { ascending: true });
+
+  if (error) throw error;
+  return (data ?? []).map((row) => normalizeDay(row.date as string, row));
+}
+
 /** その日の記録を読み込む。無ければ空の日を返す。 */
 export async function loadDay(
   supabase: SupabaseClient,

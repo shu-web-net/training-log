@@ -3,10 +3,12 @@
 import { useEffect, useMemo, useState } from "react";
 import { addDays, todayStr } from "@/lib/date";
 import { createClient } from "@/lib/supabase/client";
-import { loadMonthHabits } from "@/lib/day";
+import { loadDays, loadMonthHabits } from "@/lib/day";
 import { useDayRecord } from "@/lib/useDayRecord";
 import DateBar from "@/components/record/DateBar";
 import SaveStatus from "@/components/record/SaveStatus";
+import StatsTiles from "@/components/record/StatsTiles";
+import Calendar from "@/components/record/Calendar";
 import TrainingSection from "@/components/record/TrainingSection";
 import YogaSection from "@/components/record/YogaSection";
 import BodySection from "@/components/record/BodySection";
@@ -15,6 +17,7 @@ import GutSection from "@/components/record/GutSection";
 import MemoSection from "@/components/record/MemoSection";
 import type {
   BodyMeasure,
+  DayRecord,
   Habits,
   Meal,
   TrainingSet,
@@ -47,6 +50,29 @@ export default function RecordScreen({ userId }: { userId: string }) {
     // 日付が変わるか、保存が成功するたびに読み直す（最大31行なので軽い）
   }, [supabase, date, savedTick]);
 
+  // 集計タイル用：直近1年ぶんを読み込む（365行程度なので軽い）。保存ごとに更新。
+  const [yearDays, setYearDays] = useState<DayRecord[]>([]);
+  useEffect(() => {
+    let cancelled = false;
+    const today = todayStr();
+    loadDays(supabase, addDays(today, -364), today)
+      .then((rows) => {
+        if (!cancelled) setYearDays(rows);
+      })
+      .catch(() => {
+        /* タイルは補助表示なので失敗しても操作は止めない */
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [supabase, savedTick]);
+
+  // タイル集計では、編集中の日は保存前でも最新の状態を反映する。
+  const tilesDays = useMemo(() => {
+    if (!day) return yearDays;
+    return [...yearDays.filter((d) => d.date !== date), day];
+  }, [yearDays, day, date]);
+
   // 今月の回数。編集中の日は保存前でも最新の状態を反映する（DBの値より優先）。
   const monthCounts = useMemo<Record<keyof Habits, number>>(() => {
     const merged: Record<string, Habits> = { ...monthHabits };
@@ -67,6 +93,8 @@ export default function RecordScreen({ userId }: { userId: string }) {
         <h1 className="text-xl font-bold text-slate-900">記録</h1>
         <SaveStatus status={status} onRetry={retry} />
       </div>
+
+      <StatsTiles days={tilesDays} />
 
       <DateBar
         date={date}
@@ -161,6 +189,14 @@ export default function RecordScreen({ userId }: { userId: string }) {
           />
         </div>
       )}
+
+      <Calendar
+        supabase={supabase}
+        savedTick={savedTick}
+        selectedDate={date}
+        liveDay={day}
+        onSelect={setDate}
+      />
     </div>
   );
 }
