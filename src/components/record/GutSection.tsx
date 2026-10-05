@@ -13,10 +13,29 @@ const MARKS: {
   text: string;
   aria: string;
   on: string;
+  size: string; // グリフごとに描画サイズが違うので個別に合わせる
 }[] = [
-  { value: "ok", text: "○", aria: "良い", on: "border-emerald-500 bg-emerald-50 text-emerald-600" },
-  { value: "mid", text: "△", aria: "ふつう", on: "border-amber-500 bg-amber-50 text-amber-600" },
-  { value: "ng", text: "×", aria: "良くない", on: "border-rose-500 bg-rose-50 text-rose-600" },
+  {
+    value: "ok",
+    text: "◯",
+    aria: "良い",
+    size: "text-[21px]",
+    on: "border-emerald-500 bg-emerald-50 text-emerald-600",
+  },
+  {
+    value: "mid",
+    text: "△",
+    aria: "ふつう",
+    size: "text-[18px]",
+    on: "border-amber-500 bg-amber-50 text-amber-600",
+  },
+  {
+    value: "ng",
+    text: "✕",
+    aria: "良くない",
+    size: "text-[18px]",
+    on: "border-rose-500 bg-rose-50 text-rose-600",
+  },
 ];
 
 /** 腸の調子（昼・夜を ○△×）。同じボタンをもう一度押すと取り消し。 */
@@ -46,7 +65,7 @@ export default function GutSection({
                   aria-pressed={pressed}
                   aria-label={`${label}の腸の調子：${m.aria}`}
                   onClick={() => onSet(key, pressed ? undefined : m.value)}
-                  className={`h-8 w-9 flex-none rounded-md border text-base ${
+                  className={`flex h-8 w-9 flex-none items-center justify-center rounded-md border leading-none ${m.size} ${
                     pressed
                       ? `${m.on} font-semibold`
                       : "border-slate-200 bg-white text-slate-400 hover:border-slate-400"
