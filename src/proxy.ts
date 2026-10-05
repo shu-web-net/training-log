@@ -1,7 +1,9 @@
 import { type NextRequest } from "next/server";
-import { updateSession } from "@/lib/supabase/middleware";
+import { updateSession } from "@/lib/supabase/proxy";
 
-export async function middleware(request: NextRequest) {
+// Next.js 16 でルート直下の認証・リダイレクト処理は "proxy" 規約に移行した
+// （旧称 middleware）。リクエストごとに Supabase のセッションを更新する。
+export async function proxy(request: NextRequest) {
   return await updateSession(request);
 }
 

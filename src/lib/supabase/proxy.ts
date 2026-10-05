@@ -2,8 +2,8 @@ import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
 /**
- * リクエストごとに Supabase のセッションを更新する。
- * Server Component は Cookie を書けないため、ここ（middleware）で確実に更新しておく。
+ * リクエストごとに Supabase のセッションを更新する（proxy から呼ぶ）。
+ * Server Component は Cookie を書けないため、ここで確実に更新しておく。
  */
 export async function updateSession(request: NextRequest) {
   let supabaseResponse = NextResponse.next({ request });
