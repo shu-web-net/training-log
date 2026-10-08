@@ -41,6 +41,12 @@ export default async function AppLayout({
               >
                 推移
               </Link>
+              <Link
+                href="/app/settings"
+                className="rounded-md px-2.5 py-1 text-slate-600 hover:bg-slate-100"
+              >
+                設定
+              </Link>
             </nav>
           </div>
           <div className="flex items-center gap-3">

@@ -28,3 +28,19 @@ create policy "own rows" on days
   for all
   using (auth.uid() = user_id)
   with check (auth.uid() = user_id);
+
+-- 退会（アカウント削除）用の関数。
+-- auth.users の削除は公開キーではできないため、「ログイン中の本人だけ」を消せる
+-- security definer 関数を用意し、authenticated だけに実行を許可する。
+-- days は on delete cascade なので、ユーザー削除で記録もすべて消える。
+create or replace function public.delete_current_user()
+returns void
+language sql
+security definer
+set search_path = ''
+as $$
+  delete from auth.users where id = auth.uid();
+$$;
+
+revoke all on function public.delete_current_user() from public, anon;
+grant execute on function public.delete_current_user() to authenticated;

@@ -78,7 +78,10 @@ export default async function Home() {
       </main>
 
       <footer className="mx-auto max-w-4xl px-4 py-8 text-center text-xs text-slate-400">
-        健康データを預かるため、記録はログインした本人だけが見られます。
+        <p>健康データを預かるため、記録はログインした本人だけが見られます。</p>
+        <Link href="/privacy" className="mt-1 inline-block hover:underline">
+          プライバシーポリシー
+        </Link>
       </footer>
     </div>
   );

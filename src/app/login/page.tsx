@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import AuthForm from "@/components/auth/AuthForm";
@@ -17,8 +18,11 @@ export default async function LoginPage() {
   }
 
   return (
-    <main className="flex min-h-dvh items-center justify-center bg-slate-50 px-4">
+    <main className="flex min-h-dvh flex-col items-center justify-center gap-6 bg-slate-50 px-4">
       <AuthForm />
+      <Link href="/privacy" className="text-xs text-slate-400 hover:underline">
+        プライバシーポリシー
+      </Link>
     </main>
   );
 }
