@@ -65,9 +65,11 @@ export default function DemoScreen() {
       <header className="border-b border-slate-200 bg-white">
         <div className="mx-auto flex max-w-3xl flex-wrap items-center justify-between gap-2 px-4 py-3">
           <div className="flex items-center gap-2">
-            <span className="font-bold text-slate-900">トレーニング記録</span>
+            <span className="hidden font-bold text-slate-900 sm:inline">
+              トレーニング記録
+            </span>
             <span className="rounded-full bg-amber-100 px-2 py-0.5 text-xs font-medium text-amber-700">
-              デモ（架空データ・保存されません）
+              デモ・保存されません
             </span>
           </div>
           <div className="flex items-center gap-2">

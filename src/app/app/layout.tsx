@@ -26,8 +26,10 @@ export default async function AppLayout({
     <div className="min-h-dvh bg-slate-50">
       <header className="border-b border-slate-200 bg-white">
         <div className="mx-auto flex max-w-3xl items-center justify-between gap-3 px-4 py-3">
-          <div className="flex items-center gap-4">
-            <span className="font-bold text-slate-900">トレーニング記録</span>
+          <div className="flex items-center gap-2 sm:gap-4">
+            <span className="hidden font-bold text-slate-900 sm:inline">
+              トレーニング記録
+            </span>
             <nav className="flex items-center gap-1 text-sm">
               <Link
                 href="/app"

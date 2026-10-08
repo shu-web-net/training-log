@@ -51,7 +51,7 @@ export default function DateBar({
             {dowLabel(date)}
           </span>
         </div>
-        <div className="mt-0.5 flex items-center justify-center gap-2 text-xs text-slate-500">
+        <div className="mt-0.5 flex flex-wrap items-center justify-center gap-x-2 gap-y-1 text-xs text-slate-500">
           <span>
             {year}年・{relativeLabel(date)}
           </span>
