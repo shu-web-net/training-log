@@ -59,7 +59,7 @@ export default function TrainingSection({
                 aria-label="種目"
                 value={s.name}
                 onChange={(e) => onUpdate(s.id, { name: e.target.value })}
-                className="min-w-0 flex-1 rounded-md border border-transparent bg-transparent px-2 py-1 hover:border-slate-200 focus:border-slate-400 focus:bg-white focus:outline-none"
+                className="min-w-0 flex-1 rounded-md border border-transparent bg-transparent px-2 py-1 hover:border-slate-200 focus:border-slate-400 focus:bg-surface focus:outline-none"
               />
               <input
                 aria-label="量"
@@ -71,7 +71,7 @@ export default function TrainingSection({
                 onChange={(e) =>
                   onUpdate(s.id, { value: toValue(e.target.value) })
                 }
-                className="w-16 rounded-md border border-transparent bg-transparent px-2 py-1 text-right font-mono tabular-nums hover:border-slate-200 focus:border-slate-400 focus:bg-white focus:outline-none"
+                className="w-16 rounded-md border border-transparent bg-transparent px-2 py-1 text-right font-mono tabular-nums hover:border-slate-200 focus:border-slate-400 focus:bg-surface focus:outline-none"
               />
               <select
                 aria-label="単位"
@@ -79,7 +79,7 @@ export default function TrainingSection({
                 onChange={(e) =>
                   onUpdate(s.id, { unit: e.target.value as Unit })
                 }
-                className="w-16 rounded-md border border-transparent bg-transparent px-1 py-1 text-sm text-slate-500 hover:border-slate-200 focus:border-slate-400 focus:bg-white focus:outline-none"
+                className="w-16 rounded-md border border-transparent bg-transparent px-1 py-1 text-sm text-slate-500 hover:border-slate-200 focus:border-slate-400 focus:bg-surface focus:outline-none"
               >
                 {UNITS.map((u) => (
                   <option key={u} value={u}>
@@ -144,7 +144,7 @@ export default function TrainingSection({
         <button
           type="button"
           onClick={handleAdd}
-          className="rounded-lg bg-slate-900 px-4 py-2 font-medium text-white hover:bg-slate-700"
+          className="rounded-lg bg-primary px-4 py-2 font-medium text-on-primary hover:opacity-90"
         >
           追加
         </button>

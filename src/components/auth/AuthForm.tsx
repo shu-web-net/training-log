@@ -90,7 +90,7 @@ export default function AuthForm() {
             onClick={() => switchMode(m)}
             className={`flex-1 rounded-md px-3 py-2 font-medium transition ${
               mode === m
-                ? "bg-white text-slate-900 shadow-sm"
+                ? "bg-surface text-slate-900 shadow-sm"
                 : "text-slate-500 hover:text-slate-700"
             }`}
           >
@@ -174,7 +174,7 @@ export default function AuthForm() {
         <button
           type="submit"
           disabled={pending}
-          className="w-full rounded-lg bg-slate-900 px-4 py-2.5 font-medium text-white transition hover:bg-slate-700 disabled:opacity-50"
+          className="w-full rounded-lg bg-primary px-4 py-2.5 font-medium text-on-primary transition hover:opacity-90 disabled:opacity-50"
         >
           {pending ? "処理中…" : MODE_LABEL[mode]}
         </button>

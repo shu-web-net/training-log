@@ -24,7 +24,7 @@ export default function Switcher<T extends string | number>({
             onClick={() => onChange(o.value)}
             className={`rounded-full border px-3 py-1 text-xs ${
               on
-                ? "border-slate-900 bg-slate-900 text-white"
+                ? "border-slate-900 bg-primary text-on-primary"
                 : "border-slate-300 text-slate-500 hover:border-slate-500"
             }`}
           >

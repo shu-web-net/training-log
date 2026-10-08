@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import ThemeToggle from "@/components/ui/ThemeToggle";
 
 const FEATURES: { title: string; body: string }[] = [
   {
@@ -29,12 +30,15 @@ export default async function Home() {
     <div className="min-h-dvh bg-slate-50">
       <header className="mx-auto flex max-w-4xl items-center justify-between px-4 py-4">
         <span className="font-bold text-slate-900">トレーニング記録</span>
-        <Link
-          href="/login"
-          className="rounded-lg border border-slate-300 px-3 py-1.5 text-sm text-slate-700 hover:bg-slate-100"
-        >
-          ログイン
-        </Link>
+        <div className="flex items-center gap-2">
+          <ThemeToggle />
+          <Link
+            href="/login"
+            className="rounded-lg border border-slate-300 px-3 py-1.5 text-sm text-slate-700 hover:bg-slate-100"
+          >
+            ログイン
+          </Link>
+        </div>
       </header>
 
       <main className="mx-auto max-w-4xl px-4">
@@ -49,7 +53,7 @@ export default async function Home() {
           <div className="mt-8 flex flex-wrap justify-center gap-3">
             <Link
               href="/login"
-              className="rounded-lg bg-slate-900 px-6 py-3 font-medium text-white hover:bg-slate-700"
+              className="rounded-lg bg-primary px-6 py-3 font-medium text-on-primary hover:opacity-90"
             >
               はじめる（無料）
             </Link>
@@ -66,7 +70,7 @@ export default async function Home() {
           {FEATURES.map((f) => (
             <div
               key={f.title}
-              className="rounded-lg border border-slate-200 bg-white p-5"
+              className="rounded-lg border border-slate-200 bg-surface p-5"
             >
               <h2 className="font-bold text-slate-900">{f.title}</h2>
               <p className="mt-2 text-sm leading-relaxed text-slate-600">

@@ -27,8 +27,10 @@ const IW = W - PAD.l - PAD.r;
 const IH = H - PAD.t - PAD.b;
 const DAY = 86400000;
 
-const AM_COLOR = "#b45309"; // amber-700
-const PM_COLOR = "#4338ca"; // indigo-700
+// 凡例（bg-amber-700 / bg-indigo-700）と色を合わせるため CSS 変数を使う。
+// ダーク時は globals.css で明るめに差し替わる。
+const AM_COLOR = "var(--color-amber-700)";
+const PM_COLOR = "var(--color-indigo-700)";
 
 /** >5日あいたところで線を分割する（欠損を直線で繋がない）。 */
 function splitRuns(points: ChartPoint[]): ChartPoint[][] {
@@ -160,7 +162,7 @@ export default function WeightChart({
               y1={geom.y(v)}
               x2={W - PAD.r}
               y2={geom.y(v)}
-              stroke="#e2e8f0"
+              stroke="var(--color-slate-200)"
               strokeWidth={1}
             />
             <text
@@ -168,7 +170,7 @@ export default function WeightChart({
               y={geom.y(v) + 3.5}
               textAnchor="end"
               fontSize={10.5}
-              fill="#94a3b8"
+              fill="var(--color-slate-400)"
               fontFamily="ui-monospace, monospace"
             >
               {v.toFixed(1)}
@@ -186,7 +188,7 @@ export default function WeightChart({
               y={H - 7}
               textAnchor={anchor}
               fontSize={10.5}
-              fill="#94a3b8"
+              fill="var(--color-slate-400)"
               fontFamily="ui-monospace, monospace"
             >
               {d.getMonth() + 1}/{d.getDate()}
@@ -200,7 +202,7 @@ export default function WeightChart({
             y1={PAD.t}
             x2={hover.px}
             y2={PAD.t + IH}
-            stroke="#94a3b8"
+            stroke="var(--color-slate-400)"
             strokeWidth={1}
             strokeDasharray="3 3"
           />
@@ -212,7 +214,7 @@ export default function WeightChart({
 
       {hover && (
         <div
-          className="pointer-events-none absolute top-2 z-10 min-w-[112px] rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-xs shadow-md"
+          className="pointer-events-none absolute top-2 z-10 min-w-[112px] rounded-lg border border-slate-200 bg-surface px-2.5 py-1.5 text-xs shadow-md"
           style={{ left: hover.left }}
         >
           <div className="font-mono text-slate-400">
@@ -283,7 +285,7 @@ function Series({
             cy={geom.y(p.v)}
             r={radius}
             fill={color}
-            stroke="#ffffff"
+            stroke="var(--color-surface)"
             strokeWidth={1.5}
           />
         ))}

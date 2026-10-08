@@ -66,7 +66,7 @@ export default function BodySection({
                     onChange={(e) =>
                       onChange(slot, field, toValue(e.target.value))
                     }
-                    className="w-24 rounded-md border border-slate-200 bg-white px-2 py-1 text-right font-mono tabular-nums focus:border-slate-900 focus:outline-none"
+                    className="w-24 rounded-md border border-slate-200 bg-surface px-2 py-1 text-right font-mono tabular-nums focus:border-slate-900 focus:outline-none"
                   />
                   <span className="w-7 text-xs text-slate-400">{unit}</span>
                 </div>

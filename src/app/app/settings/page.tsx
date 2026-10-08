@@ -16,7 +16,7 @@ export default async function SettingsPage() {
     <div className="space-y-4">
       <h1 className="text-xl font-bold text-slate-900">設定</h1>
 
-      <section className="rounded-lg border border-slate-200 bg-white p-4">
+      <section className="rounded-lg border border-slate-200 bg-surface p-4">
         <h2 className="font-bold text-slate-900">アカウント</h2>
         <p className="mt-1 text-sm text-slate-600">
           ログイン中のメールアドレス：

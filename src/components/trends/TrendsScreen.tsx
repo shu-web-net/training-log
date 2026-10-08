@@ -122,7 +122,7 @@ export default function TrendsScreen() {
     <div className="space-y-4">
       <h1 className="text-xl font-bold text-slate-900">推移</h1>
 
-      <section className="space-y-3 rounded-lg border border-slate-200 bg-white p-4">
+      <section className="space-y-3 rounded-lg border border-slate-200 bg-surface p-4">
         <div className="flex items-center justify-between gap-2">
           <h2 className="font-bold text-slate-900">体組成の推移</h2>
           <div className="flex items-center gap-3 text-xs text-slate-500">
@@ -153,7 +153,7 @@ export default function TrendsScreen() {
         )}
       </section>
 
-      <section className="rounded-lg border border-slate-200 bg-white p-4">
+      <section className="rounded-lg border border-slate-200 bg-surface p-4">
         <h2 className="mb-2 font-bold text-slate-900">最近の記録</h2>
         {loading ? (
           <p className="py-6 text-center text-sm text-slate-400">読み込み中…</p>

@@ -1,13 +1,72 @@
 @import "tailwindcss";
 
 /*
- * いまはライト基調で統一する（白カード＋スレート文字）。
- * OS のダークモードで本文色が白へ反転すると、白い入力欄で文字が読めなくなるため、
- * 自動ダーク切り替えは入れていない。ダークモード対応は後日の仕上げ工程で検討する。
+ * ダークモード：手動トグル（ライト / ダーク / 端末に合わせる）。
+ * data-theme="dark" が付いたときに暗色になる。system はJS側で解決して data-theme を付ける。
+ *
+ * 方針：Tailwind v4 の色ユーティリティは CSS変数（--color-slate-* など）を参照するので、
+ * ダーク時にそれらの変数を再定義すると、文字・境界・グレー背景が一括で切り替わる。
+ * 例外のカード面(surface)とプライマリボタン(primary)だけ専用トークンにしている。
  */
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+@theme {
+  --color-surface: #ffffff; /* カード・ヘッダーの面 */
+  --color-primary: #0f172a; /* プライマリボタンの背景 */
+  --color-on-primary: #ffffff; /* プライマリボタンの文字 */
+}
+
 :root {
-  --background: #f8fafc; /* slate-50 */
-  --foreground: #0f172a; /* slate-900 */
+  --background: #f8fafc;
+  --foreground: #0f172a;
+}
+
+[data-theme="dark"] {
+  --background: #0f1826;
+  --foreground: #eef2f7;
+
+  --color-surface: #141d2b;
+  --color-primary: #e2e8f0;
+  --color-on-primary: #0f172a;
+
+  /* ニュートラル（slate）をダーク向けに反転：番号が大きいほど明るく */
+  --color-slate-50: #0f1826;
+  --color-slate-100: #18222f;
+  --color-slate-200: #273244;
+  --color-slate-300: #35435a;
+  --color-slate-400: #5b6b82;
+  --color-slate-500: #8696ab;
+  --color-slate-600: #aab7c8;
+  --color-slate-700: #c6d0dc;
+  --color-slate-800: #dde4ec;
+  --color-slate-900: #eef2f7;
+
+  /* アクセントの淡色背景（タグ・選択中の面・カレンダーの地色）をダーク向けに */
+  --color-amber-50: #2a2211;
+  --color-amber-100: #37290f;
+  --color-violet-50: #201c38;
+  --color-emerald-50: #102a20;
+  --color-emerald-100: #143a2b;
+  --color-rose-50: #2a1519;
+  --color-rose-100: #381920;
+  --color-rose-200: #4a2630;
+  --color-sky-100: #0f2a3b;
+  --color-red-50: #2a1416;
+  --color-red-100: #381a1d;
+  --color-green-50: #0f2a1c;
+
+  /* アクセントの文字色はダークでは少し明るめに（可読性のため） */
+  --color-amber-700: #fbbf24;
+  --color-emerald-600: #34d399;
+  --color-rose-600: #fb7185;
+  --color-rose-700: #fb7185;
+  --color-violet-700: #a78bfa;
+  --color-indigo-700: #818cf8;
+  --color-sky-700: #38bdf8;
+  --color-red-600: #f87171;
+  --color-red-700: #f87171;
+  --color-green-600: #4ade80;
+  --color-green-700: #4ade80;
 }
 
 @theme inline {

@@ -53,7 +53,7 @@ export default function StatsTiles({ days }: { days: DayRecord[] }) {
 
 function Tile({ k, v, unit }: { k: string; v: number; unit: string }) {
   return (
-    <div className="rounded-lg border border-slate-200 bg-white px-3 py-2">
+    <div className="rounded-lg border border-slate-200 bg-surface px-3 py-2">
       <div className="text-xs tracking-wider text-slate-400">{k}</div>
       <div className="font-mono text-xl font-semibold tabular-nums text-slate-900">
         {v}
@@ -75,7 +75,7 @@ function WeightTile({
   data: { value: number; diff: number | null } | null;
 }) {
   return (
-    <div className="rounded-lg border border-slate-200 bg-white px-3 py-2">
+    <div className="rounded-lg border border-slate-200 bg-surface px-3 py-2">
       <div className={`text-xs tracking-wider ${accent}`}>{k}</div>
       {data === null ? (
         <div className="font-mono text-xl font-semibold text-slate-300">—</div>

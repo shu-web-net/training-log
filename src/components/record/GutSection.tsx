@@ -68,7 +68,7 @@ export default function GutSection({
                   className={`flex h-8 w-9 flex-none items-center justify-center rounded-md border leading-none ${m.size} ${
                     pressed
                       ? `${m.on} font-semibold`
-                      : "border-slate-200 bg-white text-slate-400 hover:border-slate-400"
+                      : "border-slate-200 bg-surface text-slate-400 hover:border-slate-400"
                   }`}
                 >
                   {m.text}

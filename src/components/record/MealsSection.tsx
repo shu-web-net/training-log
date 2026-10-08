@@ -56,7 +56,7 @@ export default function MealsSection({
                 onChange={(e) =>
                   onUpdate(m.id, { slot: e.target.value as MealSlot })
                 }
-                className="w-16 flex-none rounded-md border border-transparent bg-transparent px-1 py-1 text-sm text-amber-700 hover:border-slate-200 focus:border-slate-400 focus:bg-white focus:outline-none"
+                className="w-16 flex-none rounded-md border border-transparent bg-transparent px-1 py-1 text-sm text-amber-700 hover:border-slate-200 focus:border-slate-400 focus:bg-surface focus:outline-none"
               >
                 {SLOTS.map((s) => (
                   <option key={s.value} value={s.value}>
@@ -69,7 +69,7 @@ export default function MealsSection({
                 value={m.text}
                 autoComplete="off"
                 onChange={(e) => onUpdate(m.id, { text: e.target.value })}
-                className="min-w-0 flex-1 rounded-md border border-transparent bg-transparent px-2 py-1 hover:border-slate-200 focus:border-slate-400 focus:bg-white focus:outline-none"
+                className="min-w-0 flex-1 rounded-md border border-transparent bg-transparent px-2 py-1 hover:border-slate-200 focus:border-slate-400 focus:bg-surface focus:outline-none"
               />
               <button
                 type="button"
@@ -113,7 +113,7 @@ export default function MealsSection({
         <button
           type="button"
           onClick={handleAdd}
-          className="rounded-lg bg-slate-900 px-4 py-2 font-medium text-white hover:bg-slate-700"
+          className="rounded-lg bg-primary px-4 py-2 font-medium text-on-primary hover:opacity-90"
         >
           追加
         </button>

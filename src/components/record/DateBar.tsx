@@ -24,7 +24,7 @@ export default function DateBar({
   const year = parseYmd(date).getFullYear();
 
   return (
-    <div className="flex items-center gap-2 rounded-lg border border-slate-200 bg-white p-2">
+    <div className="flex items-center gap-2 rounded-lg border border-slate-200 bg-surface p-2">
       <button
         type="button"
         onClick={onPrev}

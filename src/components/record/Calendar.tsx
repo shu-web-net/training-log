@@ -84,7 +84,7 @@ export default function Calendar({
   }
 
   return (
-    <section className="rounded-lg border border-slate-200 bg-white p-4">
+    <section className="rounded-lg border border-slate-200 bg-surface p-4">
       <h2 className="font-bold text-slate-900">カレンダー</h2>
 
       <div className="mt-3 flex items-center justify-between gap-2">

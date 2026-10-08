@@ -122,7 +122,7 @@ export default function RecordScreen({
       {loading || day === null ? (
         <p className="py-10 text-center text-sm text-slate-400">読み込み中…</p>
       ) : (
-        <div className="space-y-6 rounded-lg border border-slate-200 bg-white p-4">
+        <div className="space-y-6 rounded-lg border border-slate-200 bg-surface p-4">
           <TrainingSection
             sets={day.sets}
             onAdd={(set: TrainingSet) =>

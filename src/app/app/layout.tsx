@@ -2,6 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import LogoutButton from "@/components/auth/LogoutButton";
+import ThemeToggle from "@/components/ui/ThemeToggle";
 
 /**
  * 記録画面まわり（/app 配下）の共通レイアウト。
@@ -24,7 +25,7 @@ export default async function AppLayout({
 
   return (
     <div className="min-h-dvh bg-slate-50">
-      <header className="border-b border-slate-200 bg-white">
+      <header className="border-b border-slate-200 bg-surface">
         <div className="mx-auto flex max-w-3xl items-center justify-between gap-3 px-4 py-3">
           <div className="flex items-center gap-2 sm:gap-4">
             <span className="hidden font-bold text-slate-900 sm:inline">
@@ -51,10 +52,11 @@ export default async function AppLayout({
               </Link>
             </nav>
           </div>
-          <div className="flex items-center gap-3">
-            <span className="hidden text-sm text-slate-500 sm:inline">
+          <div className="flex items-center gap-2">
+            <span className="hidden text-sm text-slate-500 lg:inline">
               {user.email}
             </span>
+            <ThemeToggle />
             <LogoutButton />
           </div>
         </div>
