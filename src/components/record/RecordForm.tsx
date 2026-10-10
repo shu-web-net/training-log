@@ -22,16 +22,20 @@ import type {
 export default function RecordForm({
   day,
   monthCounts,
+  exerciseSuggestions = [],
   update,
 }: {
   day: DayRecord;
   monthCounts: Record<keyof Habits, number>;
+  /** 過去に使った種目名（最近使った順）。トレーニングの入力補完に使う。 */
+  exerciseSuggestions?: string[];
   update: (updater: (prev: DayRecord) => DayRecord) => void;
 }) {
   return (
     <div className="space-y-6 rounded-lg border border-slate-200 bg-surface p-4">
       <TrainingSection
         sets={day.sets}
+        suggestions={exerciseSuggestions}
         onAdd={(set: TrainingSet) =>
           update((prev) => ({ ...prev, sets: [...prev.sets, set] }))
         }

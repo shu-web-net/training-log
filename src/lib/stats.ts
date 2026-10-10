@@ -23,6 +23,23 @@ export function hasBody(d: DayRecord): boolean {
   return measureFilled(d.body.am) || measureFilled(d.body.pm);
 }
 
+/** 過去に使った種目名を、最近使った順・重複なしで返す（入力補完とクイック選択に使う）。 */
+export function exerciseNames(days: DayRecord[]): string[] {
+  const sorted = [...days].sort((a, b) => (a.date < b.date ? 1 : -1));
+  const seen = new Set<string>();
+  const out: string[] = [];
+  for (const d of sorted) {
+    for (const s of d.sets) {
+      const n = s.name.trim();
+      if (n && !seen.has(n)) {
+        seen.add(n);
+        out.push(n);
+      }
+    }
+  }
+  return out;
+}
+
 /** トレーニングを記録した日付の集合。 */
 export function trainedSet(days: DayRecord[]): Set<string> {
   const s = new Set<string>();

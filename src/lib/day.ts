@@ -11,6 +11,16 @@ import type {
 
 export const UNITS: Unit[] = ["回", "分", "秒", "歩", "km"];
 
+/** まだ記録がないときに提示する定番の種目。 */
+export const DEFAULT_EXERCISES = [
+  "スクワット",
+  "腕立て伏せ",
+  "腹筋ローラー",
+  "懸垂",
+  "プランク",
+  "ダンベルカール",
+];
+
 /** 新規行用のID。 */
 export function uid(): string {
   return crypto.randomUUID();

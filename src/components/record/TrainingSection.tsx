@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { UNITS, uid } from "@/lib/day";
+import { DEFAULT_EXERCISES, UNITS, uid } from "@/lib/day";
 import SectionLabel from "@/components/record/SectionLabel";
 import type { TrainingSet, Unit } from "@/types/day";
 
@@ -12,17 +12,36 @@ function toValue(s: string): number | null {
   return isFinite(n) ? Math.max(0, n) : null;
 }
 
+// 種目名から単位を推測する（手で変えればそちらが優先）。
+const UNIT_HINTS: [RegExp, Unit][] = [
+  [/ウォーキング|散歩|歩き|歩行/, "歩"],
+  [
+    /サイクリング|自転車|バイク|ボクシング|ヨガ|ストレッチ|ランニング|ジョギング|エアロ|有酸素|水泳|踏み台|ダンス|縄跳び|なわとび/,
+    "分",
+  ],
+  [/プランク/, "秒"],
+];
+function guessUnit(name: string): Unit {
+  for (const [re, u] of UNIT_HINTS) if (re.test(name)) return u;
+  return "回";
+}
+
+const DATALIST_ID = "exercise-name-list";
+
 /**
  * トレーニング（種目・量・単位）。
  * 既存行はその場で編集・削除、下の欄から追加できる。
  */
 export default function TrainingSection({
   sets,
+  suggestions = [],
   onAdd,
   onUpdate,
   onRemove,
 }: {
   sets: TrainingSet[];
+  /** 過去に使った種目名（最近使った順）。入力補完とクイック選択に使う。 */
+  suggestions?: string[];
   onAdd: (set: TrainingSet) => void;
   onUpdate: (id: string, patch: Partial<TrainingSet>) => void;
   onRemove: (id: string) => void;
@@ -38,6 +57,17 @@ export default function TrainingSection({
     setName("");
     setValue("");
     setUnit("回");
+  }
+
+  // クイック選択：過去に使った種目 ＋ まだ使っていない定番、を最大8件。
+  const picks = [
+    ...suggestions,
+    ...DEFAULT_EXERCISES.filter((n) => !suggestions.includes(n)),
+  ].slice(0, 8);
+
+  function pick(n: string) {
+    setName(n);
+    setUnit(guessUnit(n));
   }
 
   return (
@@ -57,6 +87,7 @@ export default function TrainingSection({
             >
               <input
                 aria-label="種目"
+                list={DATALIST_ID}
                 value={s.name}
                 onChange={(e) => onUpdate(s.id, { name: e.target.value })}
                 className="min-w-0 flex-1 rounded-md border border-transparent bg-transparent px-2 py-1 hover:border-slate-200 focus:border-slate-400 focus:bg-surface focus:outline-none"
@@ -103,6 +134,7 @@ export default function TrainingSection({
       <div className="mt-2 flex flex-wrap gap-2">
         <input
           placeholder="種目（例：スクワット）"
+          list={DATALIST_ID}
           autoComplete="off"
           value={name}
           onChange={(e) => setName(e.target.value)}
@@ -149,6 +181,29 @@ export default function TrainingSection({
           追加
         </button>
       </div>
+
+      {/* 入力補完（過去に使った種目名） */}
+      <datalist id={DATALIST_ID}>
+        {suggestions.map((n) => (
+          <option key={n} value={n} />
+        ))}
+      </datalist>
+
+      {/* クイック選択：押すと種目名と単位が入る */}
+      {picks.length > 0 && (
+        <div className="mt-2 flex flex-wrap gap-1.5">
+          {picks.map((n) => (
+            <button
+              key={n}
+              type="button"
+              onClick={() => pick(n)}
+              className="rounded-full border border-dashed border-slate-300 px-3 py-0.5 text-xs text-slate-500 hover:border-slate-500 hover:text-slate-700"
+            >
+              {n}
+            </button>
+          ))}
+        </div>
+      )}
     </section>
   );
 }

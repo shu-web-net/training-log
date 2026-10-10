@@ -5,7 +5,7 @@ import Link from "next/link";
 import { addDays, parseYmd, todayStr } from "@/lib/date";
 import { blankDay } from "@/lib/day";
 import { generateDemoDays } from "@/lib/demo";
-import { measureSeries } from "@/lib/stats";
+import { exerciseNames, measureSeries } from "@/lib/stats";
 import DateBar from "@/components/record/DateBar";
 import StatsTiles from "@/components/record/StatsTiles";
 import Calendar from "@/components/record/Calendar";
@@ -66,6 +66,7 @@ export default function DemoScreen() {
   );
 
   const days = useMemo(() => [...daysMap.values()], [daysMap]);
+  const exerciseSuggestions = useMemo(() => exerciseNames(days), [days]);
 
   // カレンダーは編集に追従させる（days が変わるたびに読み直す）。
   const loadRange = useCallback(
@@ -150,7 +151,12 @@ export default function DemoScreen() {
           onToday={() => setSelectedDate(todayStr())}
         />
 
-        <RecordForm day={selectedDay} monthCounts={monthCounts} update={update} />
+        <RecordForm
+          day={selectedDay}
+          monthCounts={monthCounts}
+          exerciseSuggestions={exerciseSuggestions}
+          update={update}
+        />
 
         <section className="space-y-3 rounded-lg border border-slate-200 bg-surface p-4">
           <div className="flex items-center justify-between gap-2">

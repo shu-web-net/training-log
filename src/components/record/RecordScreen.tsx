@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { addDays, todayStr } from "@/lib/date";
 import { createClient } from "@/lib/supabase/client";
 import { loadDays, loadMonthHabits } from "@/lib/day";
+import { exerciseNames } from "@/lib/stats";
 import { useDayRecord } from "@/lib/useDayRecord";
 import DateBar from "@/components/record/DateBar";
 import SaveStatus from "@/components/record/SaveStatus";
@@ -78,6 +79,12 @@ export default function RecordScreen({
     return [...yearDays.filter((d) => d.date !== date), day];
   }, [yearDays, day, date]);
 
+  // トレーニングの入力補完用：過去に使った種目名（最近使った順）。
+  const exerciseSuggestions = useMemo(
+    () => exerciseNames(tilesDays),
+    [tilesDays],
+  );
+
   // 今月の回数。編集中の日は保存前でも最新の状態を反映する（DBの値より優先）。
   const monthCounts = useMemo<Record<keyof Habits, number>>(() => {
     const merged: Record<string, Habits> = { ...monthHabits };
@@ -111,7 +118,12 @@ export default function RecordScreen({
       {loading || day === null ? (
         <p className="py-10 text-center text-sm text-slate-400">読み込み中…</p>
       ) : (
-        <RecordForm day={day} monthCounts={monthCounts} update={update} />
+        <RecordForm
+          day={day}
+          monthCounts={monthCounts}
+          exerciseSuggestions={exerciseSuggestions}
+          update={update}
+        />
       )}
 
       <Calendar
