@@ -76,10 +76,11 @@ export default function RecordScreen({
   );
 
   // タイル集計では、編集中の日は保存前でも最新の状態を反映する。
+  // 除外は day.date で行う（読込中は day が旧日付のため、date で引くと重複する）。
   const tilesDays = useMemo(() => {
     if (!day) return yearDays;
-    return [...yearDays.filter((d) => d.date !== date), day];
-  }, [yearDays, day, date]);
+    return [...yearDays.filter((d) => d.date !== day.date), day];
+  }, [yearDays, day]);
 
   // トレーニングの入力補完用：過去に使った種目名（最近使った順）。
   const exerciseSuggestions = useMemo(
@@ -128,7 +129,9 @@ export default function RecordScreen({
         />
       )}
 
-      <TrendsSection days={tilesDays} />
+      {/* グラフは yearDays（保存のたびに更新）から供給する。tilesDays は打鍵ごとに
+          新配列になるため、無関係なメモ入力でも SVG 全体が再構築されてしまう。 */}
+      <TrendsSection days={yearDays} />
 
       <Calendar
         loadRange={loadCalendarRange}
