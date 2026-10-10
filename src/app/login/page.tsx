@@ -18,7 +18,13 @@ export default async function LoginPage() {
   }
 
   return (
-    <main className="flex min-h-dvh flex-col items-center justify-center gap-4 bg-slate-50 px-4 py-10">
+    <main className="relative flex min-h-dvh flex-col items-center justify-center gap-4 bg-slate-50 px-4 py-10">
+      <Link
+        href="/"
+        className="absolute left-4 top-4 text-sm text-slate-500 hover:text-slate-700 hover:underline"
+      >
+        ← トップへ
+      </Link>
       <AuthForm />
       <p className="max-w-sm rounded-lg border border-amber-700/30 bg-amber-50 px-3 py-2 text-xs leading-relaxed text-amber-700">
         ※ ポートフォリオ用の制作実績です。実サービスとしての継続運用はしておらず、記録は予告なく削除・初期化される場合があります。
