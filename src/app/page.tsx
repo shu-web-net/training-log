@@ -50,16 +50,16 @@ export default async function Home() {
             トレーニング・体組成・体調を、毎日かんたんに記録。
             自動保存と振り返りで、続けやすさを大切にした記録アプリです。
           </p>
-          <div className="mt-8 flex flex-wrap justify-center gap-3">
+          <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
             <Link
               href="/login"
-              className="rounded-lg bg-primary px-6 py-3 font-medium text-on-primary hover:opacity-90"
+              className="inline-flex items-center justify-center rounded-lg bg-primary px-6 py-3 font-medium leading-none text-on-primary hover:opacity-90"
             >
               はじめる（無料）
             </Link>
             <Link
               href="/demo"
-              className="rounded-lg border border-slate-300 px-6 py-3 font-medium text-slate-700 hover:bg-slate-100"
+              className="inline-flex items-center justify-center rounded-lg border border-slate-300 px-6 py-3 font-medium leading-none text-slate-700 hover:bg-slate-100"
             >
               デモを見る
             </Link>
