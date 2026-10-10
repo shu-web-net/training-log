@@ -64,6 +64,13 @@ export default async function Home() {
               デモを見る
             </Link>
           </div>
+
+          <p className="mx-auto mt-8 max-w-xl rounded-lg border border-amber-700/30 bg-amber-50 px-4 py-3 text-xs leading-relaxed text-amber-700">
+            ※ 本アプリは、Web アプリ開発の制作実績（ポートフォリオ）として作成したものです。
+            実サービスとしての継続運用は行っておらず、記録データは予告なく削除・初期化する場合があります。
+            大切な記録の保存先としてはご利用にならないでください。中身を見るだけなら
+            「デモを見る」からどうぞ。
+          </p>
         </section>
 
         <section className="grid gap-4 pb-12 sm:grid-cols-3">
