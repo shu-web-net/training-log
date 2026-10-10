@@ -1,0 +1,28 @@
+# Supabase 無料枠の一時停止（7日間アクセスがないと停止）を防ぐための定期ピング。
+# 週2回（月・木）、days テーブルへ軽い SELECT を1回投げて「アクセスあり」の状態を保つ。
+# 普段このアプリを使わなくても、本番のログイン機能を常に生かしておける。
+name: keep-alive
+
+on:
+  schedule:
+    # UTC で月・木の 06:00（＝日本時間 15:00）。最大でも中3〜4日なので7日に達しない。
+    - cron: "0 6 * * 1,4"
+  workflow_dispatch: # 手動でも実行できるようにする（動作確認用）
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping Supabase REST
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+        run: |
+          # days テーブルを1行だけ問い合わせる（RLSにより匿名では空だが、DBクエリは実行される＝活動とみなされる）。
+          # -f でHTTPエラー時は失敗扱いにし、異常に気づけるようにする。
+          curl -sS -f \
+            "${SUPABASE_URL}/rest/v1/days?select=date&limit=1" \
+            -H "apikey: ${SUPABASE_ANON_KEY}" \
+            -H "Authorization: Bearer ${SUPABASE_ANON_KEY}" \
+            -o /dev/null
+          echo "keep-alive ping done"
