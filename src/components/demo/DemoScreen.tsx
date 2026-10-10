@@ -130,10 +130,14 @@ export default function DemoScreen() {
       </header>
 
       <main className="mx-auto max-w-3xl space-y-4 px-4 py-6">
-        <div>
-          <h1 className="text-xl font-bold text-slate-900">記録（デモ）</h1>
-          <p className="mt-1 text-xs text-slate-400">
-            入力や編集も試せます。ここでの変更は保存されません（再読み込みで元に戻ります）。
+        <h1 className="text-xl font-bold text-slate-900">記録（デモ）</h1>
+
+        <div className="flex items-start gap-2 rounded-lg border border-amber-700/40 bg-amber-50 px-4 py-3 text-sm leading-relaxed text-amber-700">
+          <span aria-hidden className="text-base leading-none">⚠️</span>
+          <p>
+            これはデモです。入力・編集を自由に試せますが、
+            <strong className="font-bold">内容は保存されません</strong>
+            （ページを再読み込みすると、はじめの状態に戻ります）。
           </p>
         </div>
 
