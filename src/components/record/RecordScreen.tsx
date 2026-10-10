@@ -11,6 +11,8 @@ import SaveStatus from "@/components/record/SaveStatus";
 import StatsTiles from "@/components/record/StatsTiles";
 import Calendar from "@/components/record/Calendar";
 import RecordForm from "@/components/record/RecordForm";
+import TrendsSection from "@/components/trends/TrendsSection";
+import RecentRecords from "@/components/trends/RecentRecords";
 import type { DayRecord, Habits } from "@/types/day";
 
 /** 記録画面（メイン）。日付の移動と各入力を自動保存につなぐ。 */
@@ -126,6 +128,8 @@ export default function RecordScreen({
         />
       )}
 
+      <TrendsSection days={tilesDays} />
+
       <Calendar
         loadRange={loadCalendarRange}
         refreshKey={savedTick}
@@ -133,6 +137,11 @@ export default function RecordScreen({
         liveDay={day}
         onSelect={setDate}
       />
+
+      <section className="rounded-lg border border-slate-200 bg-surface p-4">
+        <h2 className="mb-2 font-bold text-slate-900">最近の記録</h2>
+        <RecentRecords days={tilesDays} onOpen={setDate} />
+      </section>
     </div>
   );
 }

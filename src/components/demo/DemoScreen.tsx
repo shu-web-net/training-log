@@ -2,38 +2,18 @@
 
 import { useCallback, useMemo, useState } from "react";
 import Link from "next/link";
-import { addDays, parseYmd, todayStr } from "@/lib/date";
+import { addDays, todayStr } from "@/lib/date";
 import { blankDay } from "@/lib/day";
 import { generateDemoDays } from "@/lib/demo";
-import { exerciseNames, measureSeries } from "@/lib/stats";
+import { exerciseNames } from "@/lib/stats";
 import DateBar from "@/components/record/DateBar";
 import StatsTiles from "@/components/record/StatsTiles";
 import Calendar from "@/components/record/Calendar";
 import RecordForm from "@/components/record/RecordForm";
-import WeightChart, { type ChartPoint } from "@/components/trends/WeightChart";
+import TrendsSection from "@/components/trends/TrendsSection";
 import RecentRecords from "@/components/trends/RecentRecords";
-import Switcher from "@/components/ui/Switcher";
 import ThemeToggle from "@/components/ui/ThemeToggle";
-import type { BodyMeasure, DayRecord, Habits } from "@/types/day";
-
-type Metric = keyof BodyMeasure;
-type Range = 30 | 90 | 365;
-const DAY = 86400000;
-
-const METRICS: { value: Metric; label: string; unit: string }[] = [
-  { value: "weight", label: "体重", unit: "kg" },
-  { value: "fat", label: "体脂肪率", unit: "%" },
-  { value: "smm", label: "骨格筋率", unit: "%" },
-];
-const RANGES: { value: Range; label: string }[] = [
-  { value: 30, label: "30日" },
-  { value: 90, label: "90日" },
-  { value: 365, label: "1年" },
-];
-
-function toPoints(series: { date: string; v: number }[]): ChartPoint[] {
-  return series.map((r) => ({ t: parseYmd(r.date).getTime(), v: r.v, date: r.date }));
-}
+import type { DayRecord, Habits } from "@/types/day";
 
 /**
  * ログイン不要のデモ画面。すべて架空データ。
@@ -47,8 +27,6 @@ export default function DemoScreen() {
     return m;
   });
   const [selectedDate, setSelectedDate] = useState<string>(todayStr());
-  const [metric, setMetric] = useState<Metric>("weight");
-  const [range, setRange] = useState<Range>(90);
 
   const selectedDay = daysMap.get(selectedDate) ?? blankDay(selectedDate);
 
@@ -86,19 +64,6 @@ export default function DemoScreen() {
     }
     return { amYoga, pmYoga };
   }, [days, monthKey]);
-
-  const current = METRICS.find((m) => m.value === metric)!;
-  const { am, pm } = useMemo(() => {
-    const amPts = toPoints(measureSeries(days, "am", metric));
-    const pmPts = toPoints(measureSeries(days, "pm", metric));
-    const all = [...amPts, ...pmPts];
-    if (!all.length) return { am: amPts, pm: pmPts };
-    const from = Math.max(...all.map((p) => p.t)) - range * DAY;
-    return {
-      am: amPts.filter((p) => p.t > from),
-      pm: pmPts.filter((p) => p.t > from),
-    };
-  }, [days, metric, range]);
 
   return (
     <div className="min-h-dvh bg-slate-50">
@@ -158,22 +123,7 @@ export default function DemoScreen() {
           update={update}
         />
 
-        <section className="space-y-3 rounded-lg border border-slate-200 bg-surface p-4">
-          <div className="flex items-center justify-between gap-2">
-            <h2 className="font-bold text-slate-900">体組成の推移</h2>
-            <div className="flex items-center gap-3 text-xs text-slate-500">
-              <span className="flex items-center gap-1">
-                <i className="inline-block h-[3px] w-3.5 rounded-sm bg-amber-700" />朝
-              </span>
-              <span className="flex items-center gap-1">
-                <i className="inline-block h-[3px] w-3.5 rounded-sm bg-indigo-700" />夜
-              </span>
-            </div>
-          </div>
-          <Switcher options={METRICS} value={metric} onChange={setMetric} ariaLabel="項目" />
-          <Switcher options={RANGES} value={range} onChange={setRange} ariaLabel="期間" />
-          <WeightChart am={am} pm={pm} unit={current.unit} />
-        </section>
+        <TrendsSection days={days} />
 
         <Calendar
           loadRange={loadRange}

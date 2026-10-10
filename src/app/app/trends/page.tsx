@@ -1,6 +1,9 @@
-import TrendsScreen from "@/components/trends/TrendsScreen";
+import { redirect } from "next/navigation";
 
-/** 推移ページ：体重などの折れ線グラフ（30/90/1年）と最近の記録一覧。 */
+/**
+ * 推移は記録画面（/app）に統合したため、このパスは /app へ転送する。
+ * 旧ブックマークやリンク対策として残している。
+ */
 export default function TrendsPage() {
-  return <TrendsScreen />;
+  redirect("/app");
 }

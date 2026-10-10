@@ -39,12 +39,6 @@ export default async function AppLayout({
                 記録
               </Link>
               <Link
-                href="/app/trends"
-                className="rounded-md px-2.5 py-1 text-slate-600 hover:bg-slate-100"
-              >
-                推移
-              </Link>
-              <Link
                 href="/app/settings"
                 className="rounded-md px-2.5 py-1 text-slate-600 hover:bg-slate-100"
               >
