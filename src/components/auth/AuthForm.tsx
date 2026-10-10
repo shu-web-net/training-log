@@ -57,11 +57,25 @@ export default function AuthForm() {
       }
 
       if (mode === "signup") {
-        const { error } = await supabase.auth.signUp({ email, password });
+        const { data, error } = await supabase.auth.signUp({
+          email,
+          password,
+          options: {
+            // メール確認が有効な場合、確認リンクはこのコールバック経由で /app へ。
+            emailRedirectTo: `${window.location.origin}/auth/callback?next=/app`,
+          },
+        });
         if (error) throw error;
-        // メール確認は無効なので、この時点でログイン済み。
-        router.refresh();
-        router.push("/app");
+        if (data.session) {
+          // メール確認が無効なら、この時点でログイン済み。
+          router.refresh();
+          router.push("/app");
+        } else {
+          // メール確認が有効：リンクを開くまでは未ログイン。案内を出す。
+          setInfo(
+            "確認メールを送信しました。メール内のリンクを開くと登録が完了します。",
+          );
+        }
         return;
       }
 
@@ -212,6 +226,9 @@ function toMessage(err: unknown): string {
     }
     if (m.includes("user already registered")) {
       return "このメールアドレスは登録済みです。ログインしてください。";
+    }
+    if (m.includes("email not confirmed")) {
+      return "メールの確認が済んでいません。確認メールのリンクを開いてください。";
     }
     if (m.includes("password should be at least")) {
       return "パスワードは6文字以上にしてください。";
