@@ -44,8 +44,9 @@ export interface Habits {
 /** 腸の調子の3段階。○=ok / △=mid / ×=ng。未入力は undefined。 */
 export type GutState = "ok" | "mid" | "ng";
 
-/** 腸の調子：昼・夜。 */
+/** 腸の調子：朝・昼・夜。 */
 export interface Gut {
+  morning?: GutState;
   noon?: GutState;
   night?: GutState;
 }

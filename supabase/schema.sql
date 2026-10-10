@@ -10,7 +10,7 @@ create table if not exists days (
   body jsonb not null default '{}'::jsonb,    -- {am:{weight,fat,smm}, pm:{weight,fat,smm}}
   meals jsonb not null default '[]'::jsonb,   -- [{id, slot, text}]
   habits jsonb not null default '{}'::jsonb,  -- {amYoga:bool, pmYoga:bool}
-  gut jsonb not null default '{}'::jsonb,     -- {noon:'ok'|'mid'|'ng', night:'ok'|'mid'|'ng'}
+  gut jsonb not null default '{}'::jsonb,     -- {morning, noon, night: 'ok'|'mid'|'ng'}
   memo text not null default '',
   updated_at timestamptz not null default now(),
   unique (user_id, date)

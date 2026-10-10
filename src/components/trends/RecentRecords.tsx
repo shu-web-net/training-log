@@ -43,12 +43,20 @@ function extraLine(d: DayRecord): string {
 }
 
 function gutInfo(d: DayRecord): { text: string; bad: boolean; good: boolean } | null {
-  const entries = (["noon", "night"] as const)
+  const slotLabel: Record<"morning" | "noon" | "night", string> = {
+    morning: "朝",
+    noon: "昼",
+    night: "夜",
+  };
+  const entries = (["morning", "noon", "night"] as const)
     .filter((k) => d.gut[k])
-    .map((k) => `${k === "noon" ? "昼" : "夜"}${GUT_MARK[d.gut[k] as GutState]}`);
+    .map((k) => `${slotLabel[k]}${GUT_MARK[d.gut[k] as GutState]}`);
   if (!entries.length) return null;
-  const bad = d.gut.noon === "ng" || d.gut.night === "ng";
-  const good = !bad && (d.gut.noon === "ok" || d.gut.night === "ok");
+  const bad =
+    d.gut.morning === "ng" || d.gut.noon === "ng" || d.gut.night === "ng";
+  const good =
+    !bad &&
+    (d.gut.morning === "ok" || d.gut.noon === "ok" || d.gut.night === "ok");
   return { text: `腸 ${entries.join(" ")}`, bad, good };
 }
 

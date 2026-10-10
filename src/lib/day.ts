@@ -91,7 +91,11 @@ export function normalizeDay(date: string, raw: unknown): DayRecord {
     body: { am: readMeasure(body.am), pm: readMeasure(body.pm) },
     meals,
     habits: { amYoga: !!habits.amYoga, pmYoga: !!habits.pmYoga },
-    gut: { noon: gutOf(gut.noon), night: gutOf(gut.night) },
+    gut: {
+      morning: gutOf(gut.morning),
+      noon: gutOf(gut.noon),
+      night: gutOf(gut.night),
+    },
     memo: typeof r.memo === "string" ? r.memo : "",
   };
 }
@@ -109,6 +113,7 @@ export function isEmptyDay(d: DayRecord): boolean {
     measureEmpty(d.body.pm) &&
     !d.habits.amYoga &&
     !d.habits.pmYoga &&
+    !d.gut.morning &&
     !d.gut.noon &&
     !d.gut.night &&
     d.memo.trim() === ""

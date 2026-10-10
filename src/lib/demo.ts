@@ -76,7 +76,11 @@ export function generateDemoDays(days = 95): DayRecord[] {
             ]
           : [{ id: `demo-${date}-m0`, slot: "lunch", text: "定食（魚）" }],
       habits: { amYoga: i % 3 === 0, pmYoga: i % 4 === 0 },
-      gut: { noon: GUT_CYCLE[i % GUT_CYCLE.length], night: GUT_CYCLE[(i + 3) % GUT_CYCLE.length] },
+      gut: {
+        morning: GUT_CYCLE[(i + 1) % GUT_CYCLE.length],
+        noon: GUT_CYCLE[i % GUT_CYCLE.length],
+        night: GUT_CYCLE[(i + 3) % GUT_CYCLE.length],
+      },
       memo: i % 10 === 0 ? "体が軽い。睡眠よくとれた。" : "",
     };
 

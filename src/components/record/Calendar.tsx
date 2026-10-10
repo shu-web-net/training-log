@@ -10,8 +10,10 @@ const DOW = ["日", "月", "火", "水", "木", "金", "土"];
 /** その日の腸の調子をマスの地色に落とす（×があれば警戒色、○があれば良色）。 */
 function gutTone(d: DayRecord | undefined): "ok" | "ng" | "" {
   if (!d) return "";
-  if (d.gut.noon === "ng" || d.gut.night === "ng") return "ng";
-  if (d.gut.noon === "ok" || d.gut.night === "ok") return "ok";
+  if (d.gut.morning === "ng" || d.gut.noon === "ng" || d.gut.night === "ng")
+    return "ng";
+  if (d.gut.morning === "ok" || d.gut.noon === "ok" || d.gut.night === "ok")
+    return "ok";
   return "";
 }
 

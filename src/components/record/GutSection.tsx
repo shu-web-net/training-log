@@ -4,6 +4,7 @@ import SectionLabel from "@/components/record/SectionLabel";
 import type { Gut, GutState } from "@/types/day";
 
 const SLOTS: { key: keyof Gut; label: string }[] = [
+  { key: "morning", label: "朝" },
   { key: "noon", label: "昼" },
   { key: "night", label: "夜" },
 ];
@@ -49,7 +50,7 @@ export default function GutSection({
   return (
     <section>
       <SectionLabel>腸の調子</SectionLabel>
-      <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
+      <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-3">
         {SLOTS.map(({ key, label }) => (
           <div
             key={key}
