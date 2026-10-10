@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 
@@ -42,7 +43,13 @@ export default function UpdatePasswordPage() {
   }
 
   return (
-    <main className="flex min-h-dvh items-center justify-center bg-slate-50 px-4">
+    <main className="relative flex min-h-dvh items-center justify-center bg-slate-50 px-4">
+      <Link
+        href="/login"
+        className="absolute left-4 top-4 inline-flex items-center gap-1 rounded-lg border border-slate-300 bg-surface px-3 py-1.5 text-sm font-medium text-slate-600 shadow-sm transition hover:border-slate-400 hover:bg-slate-100 hover:text-slate-800"
+      >
+        <span aria-hidden>←</span> ログインへ
+      </Link>
       <div className="w-full max-w-sm">
         <h1 className="mb-1 text-lg font-bold text-slate-900">
           新しいパスワードの設定
