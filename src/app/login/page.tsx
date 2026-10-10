@@ -21,9 +21,9 @@ export default async function LoginPage() {
     <main className="relative flex min-h-dvh flex-col items-center justify-center gap-4 bg-slate-50 px-4 py-10">
       <Link
         href="/"
-        className="absolute left-4 top-4 text-sm text-slate-500 hover:text-slate-700 hover:underline"
+        className="absolute left-4 top-4 inline-flex items-center gap-1 rounded-lg border border-slate-300 bg-surface px-3 py-1.5 text-sm font-medium text-slate-600 shadow-sm transition hover:border-slate-400 hover:bg-slate-100 hover:text-slate-800"
       >
-        ← トップへ
+        <span aria-hidden>←</span> トップへ
       </Link>
       <AuthForm />
       <p className="max-w-sm rounded-lg border border-amber-700/30 bg-amber-50 px-3 py-2 text-xs leading-relaxed text-amber-700">
