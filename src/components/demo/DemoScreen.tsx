@@ -2,17 +2,19 @@
 
 import { useCallback, useMemo, useState } from "react";
 import Link from "next/link";
-import { parseYmd, todayStr } from "@/lib/date";
+import { addDays, parseYmd, todayStr } from "@/lib/date";
+import { blankDay } from "@/lib/day";
 import { generateDemoDays } from "@/lib/demo";
 import { measureSeries } from "@/lib/stats";
+import DateBar from "@/components/record/DateBar";
 import StatsTiles from "@/components/record/StatsTiles";
 import Calendar from "@/components/record/Calendar";
+import RecordForm from "@/components/record/RecordForm";
 import WeightChart, { type ChartPoint } from "@/components/trends/WeightChart";
 import RecentRecords from "@/components/trends/RecentRecords";
-import DayView from "@/components/demo/DayView";
 import Switcher from "@/components/ui/Switcher";
 import ThemeToggle from "@/components/ui/ThemeToggle";
-import type { BodyMeasure } from "@/types/day";
+import type { BodyMeasure, DayRecord, Habits } from "@/types/day";
 
 type Metric = keyof BodyMeasure;
 type Range = 30 | 90 | 365;
@@ -33,18 +35,56 @@ function toPoints(series: { date: string; v: number }[]): ChartPoint[] {
   return series.map((r) => ({ t: parseYmd(r.date).getTime(), v: r.v, date: r.date }));
 }
 
-/** ログイン不要・読み取り専用のデモ画面。すべて架空データ。 */
+/**
+ * ログイン不要のデモ画面。すべて架空データ。
+ * 入力も試せるが、保存はされない（メモリ上だけ。再読み込みで元に戻る）。
+ */
 export default function DemoScreen() {
-  const days = useMemo(() => generateDemoDays(), []);
+  // 架空データを日付→記録の Map で保持。編集はこの Map を更新する（永続化しない）。
+  const [daysMap, setDaysMap] = useState<Map<string, DayRecord>>(() => {
+    const m = new Map<string, DayRecord>();
+    for (const d of generateDemoDays()) m.set(d.date, d);
+    return m;
+  });
   const [selectedDate, setSelectedDate] = useState<string>(todayStr());
   const [metric, setMetric] = useState<Metric>("weight");
   const [range, setRange] = useState<Range>(90);
 
+  const selectedDay = daysMap.get(selectedDate) ?? blankDay(selectedDate);
+
+  // 入力の反映（メモリ上のみ）。
+  const update = useCallback(
+    (updater: (prev: DayRecord) => DayRecord) => {
+      setDaysMap((prev) => {
+        const cur = prev.get(selectedDate) ?? blankDay(selectedDate);
+        const next = new Map(prev);
+        next.set(selectedDate, updater(cur));
+        return next;
+      });
+    },
+    [selectedDate],
+  );
+
+  const days = useMemo(() => [...daysMap.values()], [daysMap]);
+
+  // カレンダーは編集に追従させる（days が変わるたびに読み直す）。
   const loadRange = useCallback(
     (from: string, to: string) =>
       Promise.resolve(days.filter((d) => d.date >= from && d.date <= to)),
     [days],
   );
+
+  const monthKey = selectedDate.slice(0, 7);
+  const monthCounts = useMemo<Record<keyof Habits, number>>(() => {
+    let amYoga = 0;
+    let pmYoga = 0;
+    for (const d of days) {
+      if (d.date.slice(0, 7) !== monthKey) continue;
+      if (d.habits.amYoga) amYoga++;
+      if (d.habits.pmYoga) pmYoga++;
+    }
+    return { amYoga, pmYoga };
+  }, [days, monthKey]);
 
   const current = METRICS.find((m) => m.value === metric)!;
   const { am, pm } = useMemo(() => {
@@ -58,8 +98,6 @@ export default function DemoScreen() {
       pm: pmPts.filter((p) => p.t > from),
     };
   }, [days, metric, range]);
-
-  const selectedDay = days.find((d) => d.date === selectedDate) ?? null;
 
   return (
     <div className="min-h-dvh bg-slate-50">
@@ -92,17 +130,23 @@ export default function DemoScreen() {
       </header>
 
       <main className="mx-auto max-w-3xl space-y-4 px-4 py-6">
-        <h1 className="text-xl font-bold text-slate-900">記録（デモ）</h1>
+        <div>
+          <h1 className="text-xl font-bold text-slate-900">記録（デモ）</h1>
+          <p className="mt-1 text-xs text-slate-400">
+            入力や編集も試せます。ここでの変更は保存されません（再読み込みで元に戻ります）。
+          </p>
+        </div>
 
         <StatsTiles days={days} />
 
-        <section className="rounded-lg border border-slate-200 bg-surface p-4">
-          <h2 className="mb-1 font-bold text-slate-900">その日の記録</h2>
-          <p className="mb-3 text-xs text-slate-400">
-            カレンダーや「最近の記録」から日付を選ぶと、ここに表示されます。
-          </p>
-          <DayView day={selectedDay} />
-        </section>
+        <DateBar
+          date={selectedDate}
+          onPrev={() => setSelectedDate((d) => addDays(d, -1))}
+          onNext={() => setSelectedDate((d) => addDays(d, 1))}
+          onToday={() => setSelectedDate(todayStr())}
+        />
+
+        <RecordForm day={selectedDay} monthCounts={monthCounts} update={update} />
 
         <section className="space-y-3 rounded-lg border border-slate-200 bg-surface p-4">
           <div className="flex items-center justify-between gap-2">
@@ -124,7 +168,7 @@ export default function DemoScreen() {
         <Calendar
           loadRange={loadRange}
           selectedDate={selectedDate}
-          liveDay={null}
+          liveDay={selectedDay}
           onSelect={setSelectedDate}
         />
 
