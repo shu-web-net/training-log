@@ -1,6 +1,7 @@
-# Supabase 無料枠の一時停止（7日間アクセスがないと停止）を防ぐための定期ピング。
-# 毎日1回、days テーブルへ軽い SELECT を1回投げて「アクセスあり」の状態を保つ。
-# 普段このアプリを使わなくても、本番のログイン機能を常に生かしておける。
+# Supabase 無料枠の一時停止（一定期間アクセスがないと停止）を防ぐための定期ピング。
+# 毎日1回、専用アカウントで「ログイン→自分の days 行を読む」ところまで実行する。
+# 匿名の空クエリ（RLSで0行）ではアクティビティとカウントされない疑いがあったため、
+# 認証を通して Auth・DB の両方に実アクセスする形にしてある。
 name: keep-alive
 
 on:
@@ -17,16 +18,30 @@ jobs:
   ping:
     runs-on: ubuntu-latest
     steps:
-      - name: Ping Supabase REST
+      - name: Authenticated read (counts as real DB activity)
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+          KEEPALIVE_EMAIL: ${{ secrets.KEEPALIVE_EMAIL }}
+          KEEPALIVE_PASSWORD: ${{ secrets.KEEPALIVE_PASSWORD }}
         run: |
-          # days テーブルを1行だけ問い合わせる（RLSにより匿名では空だが、DBクエリは実行される＝活動とみなされる）。
-          # -f でHTTPエラー時は失敗扱いにし、異常に気づけるようにする。
-          curl -sS -f \
+          # 1) password grant でログイン＝Auth への実リクエスト。access_token を得る。
+          token=$(curl -sS -f \
+            "${SUPABASE_URL}/auth/v1/token?grant_type=password" \
+            -H "apikey: ${SUPABASE_ANON_KEY}" \
+            -H "Content-Type: application/json" \
+            -d "{\"email\":\"${KEEPALIVE_EMAIL}\",\"password\":\"${KEEPALIVE_PASSWORD}\"}" \
+            | jq -r '.access_token')
+
+          if [ -z "$token" ] || [ "$token" = "null" ]; then
+            echo "login failed: access_token が取れませんでした"; exit 1
+          fi
+
+          # 2) 認証済みで自分の days 行を読む＝RLSを通過して実データに触れる（確実にDBアクティビティ）。
+          rows=$(curl -sS -f \
             "${SUPABASE_URL}/rest/v1/days?select=date&limit=1" \
             -H "apikey: ${SUPABASE_ANON_KEY}" \
-            -H "Authorization: Bearer ${SUPABASE_ANON_KEY}" \
-            -o /dev/null
-          echo "keep-alive ping done"
+            -H "Authorization: Bearer ${token}" \
+            | jq 'length')
+
+          echo "keep-alive done: ${rows} row(s) read (authenticated)"
